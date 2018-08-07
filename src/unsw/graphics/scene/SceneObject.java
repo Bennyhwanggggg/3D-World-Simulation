@@ -315,7 +315,7 @@ public class SceneObject {
         // TODO: add code so that the object does not change its global position, rotation or scale
         // when it is reparented. You may need to add code before and/or after 
         // the fragment of code that has been provided - depending on your approach
-        
+        //test object
         myParent.myChildren.remove(this);
         myParent = parent;
         myParent.myChildren.add(this);
