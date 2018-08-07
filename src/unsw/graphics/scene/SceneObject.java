@@ -6,6 +6,7 @@ import java.util.List;
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame2D;
+import unsw.graphics.Matrix3;
 import unsw.graphics.geometry.Point2D;
 
 /**
@@ -73,7 +74,7 @@ public class SceneObject {
      * Remove an object and all its children from the scene tree.
      */
     public void destroy() {
-	    List<SceneObject> childrenList = new ArrayList<SceneObject>(myChildren);
+      List<SceneObject> childrenList = new ArrayList<SceneObject>(myChildren);
         for (SceneObject child : childrenList) {
             child.destroy();
         }
@@ -271,6 +272,13 @@ public class SceneObject {
         // TODO: Compute the coordinate frame for this object
         // draw the object (Call drawSelf() to draw the object itself) 
         // and all its children recursively
+        CoordFrame2D objectFrame = frame
+                .translate(myTranslation)
+                .rotate(myRotation)
+                .scale(myScale, myScale);
+        drawSelf(gl, objectFrame);
+        for(SceneObject object_child:myChildren)
+          object_child.draw(gl, objectFrame);
        
         
     }
@@ -280,9 +288,23 @@ public class SceneObject {
      * 
      * @return a point in world coordinats
      */
+    
+    public Matrix3 getMatrix(){
+
+    if(getParent()==null)
+          return new Matrix3(new float[]{1f, 0f, 0f,  0f, 1f, 0f, getPosition().getX(), getPosition().getY(), 1f});
+    Matrix3 m = getParent().getMatrix();
+    m = m.multiply(m.translation(getPosition()));
+    m = m.multiply(m.rotation(getRotation()));
+    m = m.multiply(m.scale(getScale(), getScale()));
+      return m;
+    }
+    
     public Point2D getGlobalPosition() {
         // TODO: Complete this
-        return null;
+      
+      float[] m = getMatrix().getValues();
+        return new Point2D (m[6], m[7]);
     }
 
     /**
@@ -293,7 +315,10 @@ public class SceneObject {
      */
     public float getGlobalRotation() {
         // TODO: Complete this
-        return 0;
+      if(getParent() == null)
+        return getRotation();
+        
+      return MathUtil.normaliseAngle(getRotation()+getParent().getGlobalRotation());
     }
 
     /**
@@ -303,7 +328,9 @@ public class SceneObject {
      */
     public float getGlobalScale() {
         // TODO: Complete this
-        return 1;
+      if(getParent() == null)
+        return getScale();
+      return getScale()*getParent().getGlobalScale();
     }
 
     /**
@@ -315,10 +342,33 @@ public class SceneObject {
         // TODO: add code so that the object does not change its global position, rotation or scale
         // when it is reparented. You may need to add code before and/or after 
         // the fragment of code that has been provided - depending on your approach
-        //test object
+        
+      Point2D glob_position = getGlobalPosition();
+      float glob_rotation = getGlobalRotation();
+      float glob_scale = getGlobalScale();
+      
+      Point2D glob_position_parent = parent.getGlobalPosition();
+      float glob_rotation_parent = parent.getGlobalRotation();
+      float glob_scale_parent = parent.getGlobalScale();
+      
+      // change parent
         myParent.myChildren.remove(this);
         myParent = parent;
         myParent.myChildren.add(this);
+        
+        // inverse
+        Matrix3 inv_rotat = Matrix3.rotation(-glob_rotation_parent);
+        Matrix3 inv_scale = Matrix3.scale(1/glob_scale_parent, 1/glob_scale_parent);
+        Matrix3 inv_trans = Matrix3.translation(-glob_position_parent.getX(), -glob_position_parent.getY());
+        
+        Matrix3 inv_all = inv_scale.multiply(inv_rotat).multiply(inv_trans);        
+        Matrix3 inv_phi = new Matrix3(new float[]{1f, 0f, 0f,   0f, 1f, 0f, glob_position.getX(), glob_position.getY(), 1f});
+        float[] new_trans = inv_all.multiply(inv_phi).getValues();
+        
+        // local translation
+        setPosition(new_trans[6], new_trans[7]);
+        setRotation(glob_rotation - glob_rotation_parent);
+        setScale(glob_scale/glob_scale_parent);
         
     }
     
