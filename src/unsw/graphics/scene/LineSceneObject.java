@@ -5,6 +5,7 @@ import java.awt.Color;
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame2D;
+import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Polygon2D;
 
 /**
@@ -18,11 +19,17 @@ import unsw.graphics.geometry.Polygon2D;
  * @author Robert Clifton-Everest
  * 
  */
-public class PolygonalSceneObject extends SceneObject {
+public class LineSceneObject extends SceneObject {
 
     private Polygon2D myPolygon;
     private Color myFillColor;
     private Color myLineColor;
+    private float x_0;
+    private float x_1;
+    private float y_0;
+    private float y_1;
+    private Point2D point_1;
+    private Point2D point_2;
 
     /**
      * Create a polygonal scene object and add it to the scene tree
@@ -35,7 +42,7 @@ public class PolygonalSceneObject extends SceneObject {
      * @param fillColor The fill color
      * @param lineColor The outline color
     */
-    public PolygonalSceneObject(SceneObject parent, Polygon2D polygon,
+    public LineSceneObject(SceneObject parent, Polygon2D polygon,
             Color fillColor, Color lineColor) {
         super(parent);
 
@@ -43,7 +50,44 @@ public class PolygonalSceneObject extends SceneObject {
         myFillColor = fillColor;
         myLineColor = lineColor;
     }
+    
+    //Create a LineSceneObject from (0,0) to (1,0)
+    public LineSceneObject(SceneObject parent, Color lineColor){
+    	super(parent);
+    	x_1 = 1.0f;
+    	x_0 = y_0 = y_1 = 0;
+    	myLineColor = lineColor;
+    }
+    
 
+    //Create a LineSceneObject from (x1,y1) to (x2,y2)
+    public LineSceneObject(SceneObject parent, float x0, float y0, float x1, float y1, Color lineColor){
+    	super(parent);
+    	x_0=x0;
+    	x_1=x1;
+    	y_0=y0;
+    	y_1=y1;
+    	
+    	myLineColor = lineColor;
+    	
+    }
+    
+    public void set_first_poinst(){
+    	point_1 = new Point2D(x_0, y_0);
+    }
+    
+    public void set_second_poinst(){
+    	point_2 = new Point2D(x_1, y_1);
+    }
+    
+    public Point2D get_first_point(){
+		return point_1; 
+    }
+    
+    public Point2D get_second_point(){
+    	return point_2; 
+    }
+    
     /**
      * Get the fill color
      * 

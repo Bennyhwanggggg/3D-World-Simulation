@@ -18,11 +18,12 @@ import unsw.graphics.geometry.Polygon2D;
  * @author Robert Clifton-Everest
  * 
  */
-public class PolygonalSceneObject extends SceneObject {
+public class CircularSceneObject extends SceneObject {
 
     private Polygon2D myPolygon;
     private Color myFillColor;
     private Color myLineColor;
+    private float r;
 
     /**
      * Create a polygonal scene object and add it to the scene tree
@@ -35,13 +36,41 @@ public class PolygonalSceneObject extends SceneObject {
      * @param fillColor The fill color
      * @param lineColor The outline color
     */
-    public PolygonalSceneObject(SceneObject parent, Polygon2D polygon,
+    public CircularSceneObject(SceneObject parent, Polygon2D polygon,
             Color fillColor, Color lineColor) {
         super(parent);
 
         myPolygon = polygon;
         myFillColor = fillColor;
         myLineColor = lineColor;
+    }
+    
+    //Create a CircularSceneObject with centre 0,0 and radius 1
+    public CircularSceneObject(SceneObject parent, Color fillColor, Color lineColor){
+        super(parent);
+
+        r = 1.0f;
+        myFillColor = fillColor;
+        myLineColor = lineColor;
+    }
+
+    //Create a CircularSceneObject with centre 0,0 and a given radius
+    public CircularSceneObject(SceneObject parent, float radius, Color fillColor, Color lineColor){
+        super(parent);
+
+        r = radius;
+        myFillColor = fillColor;
+        myLineColor = lineColor;
+    }
+    
+    //setter for radius
+    public void set_radius(float radius){
+    	r = radius;
+    }
+    
+    //get for radius
+    public float get_radius(){
+    	return r;
     }
 
     /**
@@ -101,7 +130,7 @@ public class PolygonalSceneObject extends SceneObject {
 
         // TODO: Write this method
     	if(myFillColor!=null){
-    		gl.glColor
+    		gl.
     		
     	}
     	if(myLineColor!=null){
