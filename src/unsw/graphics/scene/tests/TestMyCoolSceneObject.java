@@ -42,6 +42,7 @@ public class TestMyCoolSceneObject extends Application2D {
         //black background and it looks better with a white or a red background
 		
 		MyCoolSceneObject cso = new MyCoolSceneObject(scene.getRoot());
+
 		
 		// Should not break if we apply transformations for example
 		// If we uncommented these lines (or wrote other transformations) 
