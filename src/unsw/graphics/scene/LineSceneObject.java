@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame2D;
 import unsw.graphics.Shader;
+import unsw.graphics.geometry.Line2D;
 import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Polygon2D;
 
@@ -23,7 +24,7 @@ import unsw.graphics.geometry.Polygon2D;
 public class LineSceneObject extends SceneObject {
 
     private Polygon2D myPolygon;
-    private Color myFillColor;
+    private Line2D line;
     private Color myLineColor;
     private Shader shader;
     private float x_0;
@@ -44,20 +45,14 @@ public class LineSceneObject extends SceneObject {
      * @param fillColor The fill color
      * @param lineColor The outline color
     */
-    public LineSceneObject(SceneObject parent, Polygon2D polygon,
-            Color fillColor, Color lineColor) {
-        super(parent);
 
-        myPolygon = polygon;
-        myFillColor = fillColor;
-        myLineColor = lineColor;
-    }
     
     //Create a LineSceneObject from (0,0) to (1,0)
     public LineSceneObject(SceneObject parent, Color lineColor){
     	super(parent);
     	x_1 = 1.0f;
     	x_0 = y_0 = y_1 = 0;
+    	line = new Line2D(x_0,y_0, x_1,y_1);
     	myLineColor = lineColor;
     }
     
@@ -69,7 +64,7 @@ public class LineSceneObject extends SceneObject {
     	x_1=x1;
     	y_0=y0;
     	y_1=y1;
-    	
+    	line = new Line2D(x_0,y_0, x_1,y_1);
     	myLineColor = lineColor;
     	
     }
@@ -90,25 +85,7 @@ public class LineSceneObject extends SceneObject {
     	return point_2; 
     }
     
-    /**
-     * Get the fill color
-     * 
-     * @return
-     */
-    public Color getFillColor() {
-        return myFillColor;
-    }
 
-    /**
-     * Set the fill color.
-     * 
-     * Setting the color to null means the object should not be filled.
-     * 
-     * @param fillColor The fill color
-     */
-    public void setFillColor(Color fillColor) {
-        myFillColor = fillColor;
-    }
 
     /**
      * Get the outline color.
@@ -146,14 +123,10 @@ public class LineSceneObject extends SceneObject {
     public void drawSelf(GL3 gl, CoordFrame2D frame) {
 
         // TODO: Write this method
-    	if(myFillColor!=null){
-    		shader.setPenColor(gl, myFillColor);
-    		myPolygon.draw(gl, frame);
-    		
-    	}
+
     	if(myLineColor!=null){
     		shader.setPenColor(gl, myLineColor);
-    		myPolygon.drawOutline(gl, frame);
+    		line.draw(gl, frame);
     		
     	}
 
