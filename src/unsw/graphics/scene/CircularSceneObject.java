@@ -130,7 +130,7 @@ public class CircularSceneObject extends SceneObject {
 
         // TODO: Write this method
     	if(myFillColor!=null){
-    		gl.
+    		
     		
     	}
     	if(myLineColor!=null){

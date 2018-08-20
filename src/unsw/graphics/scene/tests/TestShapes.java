@@ -38,7 +38,7 @@ public class TestShapes extends Application2D {
     private static void addTestShapes(Scene scene) {
         // Create a polygon
         Polygon2D poly = new Polygon2D(0,0, 1,1, 0,1);
-        PolygonalSceneObject p = new PolygonalSceneObject(scene.getRoot(), poly, null, Color.WHITE);
+        PolygonalSceneObject p = new PolygonalSceneObject(scene.getRoot(), poly, Color.GREEN, Color.YELLOW );
         p.rotate(45);
        
         /*

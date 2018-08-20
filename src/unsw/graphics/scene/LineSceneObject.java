@@ -145,7 +145,7 @@ public class LineSceneObject extends SceneObject {
 
         // TODO: Write this method
     	if(myFillColor!=null){
-    		gl.glColor
+
     		
     	}
     	if(myLineColor!=null){
