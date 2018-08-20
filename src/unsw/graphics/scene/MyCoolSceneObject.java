@@ -49,10 +49,9 @@ public class MyCoolSceneObject extends SceneObject {
 	
 	public void set_eye(SceneObject frame, float side){
 		CircularSceneObject e1 = new CircularSceneObject(frame, 0.25f, Color.WHITE, Color.WHITE);
-        e1.translate(side*0.5f,0.1f);
+        e1.translate(side*0.5f,0.3f);
 		
         CircularSceneObject e2 = new CircularSceneObject(e1, 0.25f, Color.BLACK, Color.WHITE);
-        e2.translate(0, 0.1f);
         e2.scale(0.5f);
 
 	}

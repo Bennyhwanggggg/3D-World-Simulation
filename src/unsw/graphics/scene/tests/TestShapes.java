@@ -24,7 +24,7 @@ public class TestShapes extends Application2D {
     private Scene scene;
     
 	public TestShapes() {
-        super("Test shapes", 400, 100);
+        super("Test shapes", 400, 400);
         setBackground(Color.BLACK);
         // Create a scene
         scene = new Scene();
@@ -41,7 +41,7 @@ public class TestShapes extends Application2D {
         // Create a polygon
     	
         Polygon2D poly = new Polygon2D(0,0, 1,1, 0,1);
-        PolygonalSceneObject p = new PolygonalSceneObject(scene.getRoot(), poly, Color.GREEN, Color.YELLOW );
+        PolygonalSceneObject p = new PolygonalSceneObject(scene.getRoot(), poly, null, Color.WHITE );
         p.rotate(45);
        
         

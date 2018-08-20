@@ -80,6 +80,7 @@ public class Polygon2D {
                 buffer.getBuffer(), GL.GL_STATIC_DRAW);
 
         gl.glVertexAttribPointer(Shader.POSITION, 2, GL.GL_FLOAT, false, 0, 0);
+        Shader.setModelMatrix(gl, frame.getMatrix());
     	gl.glDrawArrays(GL.GL_LINE_LOOP, 0, points.size());
     	gl.glDeleteBuffers(1, names, 0);
     }

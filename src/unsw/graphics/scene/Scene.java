@@ -1,8 +1,11 @@
 package unsw.graphics.scene;
 
+import java.util.List;
+
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame2D;
+import unsw.graphics.geometry.Point2D;
 
 
 /**
@@ -73,6 +76,12 @@ public class Scene {
     public void setCamera(Camera camera) {
         myCamera.destroy();
         this.myCamera = camera;
+    }
+    
+    public List<SceneObject> collision(Point2D p){
+
+		return null;
+    	
     }
     
 }

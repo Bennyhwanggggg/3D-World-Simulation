@@ -43,7 +43,7 @@ public class CircularSceneObject extends SceneObject {
         for (int i = 0; i < VERTICES; i++) {
             float a = (float) (i * Math.PI * 2 / VERTICES); // java.util.Math uses radians!!!
             float x = radius * (float) Math.cos(a);
-            float y = radius * ((float) Math.sin(a) + 1); // Off center
+            float y = radius * ((float) Math.sin(a)); // Off center
             Point2D p = new Point2D(x, y);
             points.add(p);
         }
