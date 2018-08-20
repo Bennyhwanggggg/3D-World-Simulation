@@ -1,10 +1,14 @@
 package unsw.graphics.scene;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame2D;
+import unsw.graphics.Shader;
+import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Polygon2D;
 
 /**
@@ -23,8 +27,32 @@ public class CircularSceneObject extends SceneObject {
     private Polygon2D myPolygon;
     private Color myFillColor;
     private Color myLineColor;
+    private Shader shader;
     private float r;
-
+    
+    
+    private static final int VERTICES = 32;
+    private static final float RADIUS = 3;
+    
+    
+    // create circle shape
+    public Polygon2D makeCircleObject(float radius) {
+    	int VERTICES = 32;
+    	Polygon2D poly;
+    	List<Point2D> points = new ArrayList<Point2D>();
+        for (int i = 0; i < VERTICES; i++) {
+            float a = (float) (i * Math.PI * 2 / VERTICES); // java.util.Math uses radians!!!
+            float x = radius * (float) Math.cos(a);
+            float y = radius * ((float) Math.sin(a) + 1); // Off center
+            Point2D p = new Point2D(x, y);
+            points.add(p);
+        }
+        
+        poly = new Polygon2D(points);
+    	
+    	return poly;
+    }
+    
     /**
      * Create a polygonal scene object and add it to the scene tree
      * 
@@ -36,20 +64,13 @@ public class CircularSceneObject extends SceneObject {
      * @param fillColor The fill color
      * @param lineColor The outline color
     */
-    public CircularSceneObject(SceneObject parent, Polygon2D polygon,
-            Color fillColor, Color lineColor) {
-        super(parent);
-
-        myPolygon = polygon;
-        myFillColor = fillColor;
-        myLineColor = lineColor;
-    }
     
     //Create a CircularSceneObject with centre 0,0 and radius 1
     public CircularSceneObject(SceneObject parent, Color fillColor, Color lineColor){
         super(parent);
 
         r = 1.0f;
+        myPolygon = makeCircleObject(1.0f);
         myFillColor = fillColor;
         myLineColor = lineColor;
     }
@@ -59,6 +80,7 @@ public class CircularSceneObject extends SceneObject {
         super(parent);
 
         r = radius;
+        myPolygon = makeCircleObject(radius);
         myFillColor = fillColor;
         myLineColor = lineColor;
     }
@@ -130,10 +152,13 @@ public class CircularSceneObject extends SceneObject {
 
         // TODO: Write this method
     	if(myFillColor!=null){
-    		
+    		shader.setPenColor(gl, myFillColor);
+    		myPolygon.draw(gl, frame);
     		
     	}
     	if(myLineColor!=null){
+    		shader.setPenColor(gl, myLineColor);
+    		myPolygon.drawOutline(gl, frame);
     		
     	}
 

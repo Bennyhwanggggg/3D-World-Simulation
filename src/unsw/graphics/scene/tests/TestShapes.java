@@ -8,6 +8,8 @@ import com.jogamp.opengl.GL3;
 import unsw.graphics.Application2D;
 import unsw.graphics.geometry.Polygon2D;
 import unsw.graphics.scene.Camera;
+import unsw.graphics.scene.CircularSceneObject;
+import unsw.graphics.scene.LineSceneObject;
 import unsw.graphics.scene.PolygonalSceneObject;
 import unsw.graphics.scene.Scene;
 
@@ -37,28 +39,33 @@ public class TestShapes extends Application2D {
 
     private static void addTestShapes(Scene scene) {
         // Create a polygon
+    	
         Polygon2D poly = new Polygon2D(0,0, 1,1, 0,1);
         PolygonalSceneObject p = new PolygonalSceneObject(scene.getRoot(), poly, Color.GREEN, Color.YELLOW );
         p.rotate(45);
        
-        /*
+        
+    	
         // Create a circle 
         Color cFillCol = new Color(1,0.5f,0.5f);
         CircularSceneObject c = new CircularSceneObject(scene.getRoot(), cFillCol, Color.WHITE);
         c.setPosition(1, -1);  
         c.setScale(0.5f);  
         
+       
+        /*
         //Create a line
         Color lineCol = new Color(0.5f,1,0.5f);
         LineSceneObject l = new LineSceneObject(scene.getRoot(),0.5f,0.5f,1,1,lineCol);
-       
+        */
+       /*
 
         //Create a line that is a child of polygon p
         Color lineCol2 = new Color(0.5f, 0.5f, 1);
         LineSceneObject l2 = new LineSceneObject(p, lineCol2);     
         l2.setPosition(-1, 0);
-      
-    
+      */
+        /*
         //Create a circle that is a child of polygon p       
         CircularSceneObject c2 = new CircularSceneObject(p, 0.25f, Color.WHITE, Color.WHITE);     
         c2.translate(-1,0);
