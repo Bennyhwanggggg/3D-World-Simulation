@@ -2,7 +2,9 @@ package unsw.graphics.scene;
 
 import com.jogamp.opengl.GL3;
 
+import unsw.graphics.CoordFrame2D;
 import unsw.graphics.Matrix3;
+import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point2D;
 
@@ -22,17 +24,26 @@ public class Camera extends SceneObject {
      */
     private float myAspectRatio;
 
+
     public Camera(SceneObject parent) {
         super(parent);
     }
 
     public void setView(GL3 gl) {
         // TODO compute a view transform to account for the cameras aspect ratio
-        
+    	//myPos = 
+
         // TODO apply further transformations to account for the camera's global position, 
         // rotation and scale
-        
+    	
+        CoordFrame2D viewFrame = CoordFrame2D.identity()
+        		.scale(1/myAspectRatio, 1)
+                .scale(1/getGlobalScale(), 1/getGlobalScale())
+                .rotate(-getGlobalRotation())
+                .translate(-getGlobalPosition().getX(), -getGlobalPosition().getY());
+            	
         // TODO set the view matrix to the computed transform
+        Shader.setViewMatrix(gl, viewFrame.getMatrix());
     }
 
     public void reshape(int width, int height) {

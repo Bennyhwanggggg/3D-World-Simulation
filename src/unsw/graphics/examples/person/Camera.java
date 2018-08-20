@@ -27,7 +27,7 @@ public class Camera implements KeyListener {
     public Camera() {
         myPos = new Point2D(0, 0);
         myAngle = 0;
-        myScale = 10;
+        myScale = 2;
     }
     
     public void draw(GL3 gl, CoordFrame2D frame) {

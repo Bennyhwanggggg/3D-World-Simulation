@@ -24,7 +24,7 @@ public class TestShapes extends Application2D {
     private Scene scene;
     
 	public TestShapes() {
-        super("Test shapes", 400, 400);
+        super("Test shapes", 400, 100);
         setBackground(Color.BLACK);
         // Create a scene
         scene = new Scene();
