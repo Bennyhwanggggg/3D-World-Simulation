@@ -33,7 +33,8 @@ public class World extends Application3D {
      * @throws FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException {
-        Terrain terrain = LevelIO.load(new File(args[0]));
+        //Terrain terrain = LevelIO.load(new File(args[0]));
+    	Terrain terrain = LevelIO.load(new File("res/worlds/test1.json"));
         World world = new World(terrain);
         world.start();
     }
@@ -46,12 +47,13 @@ public class World extends Application3D {
 	@Override
 	public void destroy(GL3 gl) {
 		super.destroy(gl);
-		
+		terrain.draw(gl);
 	}
 
 	@Override
 	public void init(GL3 gl) {
 		super.init(gl);
+		terrain.init(gl);
 		
 		
 	}

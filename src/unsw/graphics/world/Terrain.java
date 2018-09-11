@@ -2,11 +2,24 @@ package unsw.graphics.world;
 
 
 
+import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.smurn.jply.Element;
+import org.smurn.jply.ElementReader;
+
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL3;
+
+import unsw.graphics.CoordFrame3D;
+import unsw.graphics.Point2DBuffer;
+import unsw.graphics.Point3DBuffer;
+import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point2D;
+import unsw.graphics.geometry.Point3D;
 
 
 
@@ -23,6 +36,43 @@ public class Terrain {
     private List<Tree> trees;
     private List<Road> roads;
     private Vector3 sunlight;
+    private Point3DBuffer vertices;
+
+    /**
+     * Contains the normals for all vertices.
+     */
+    private Point3DBuffer normals;
+
+    /**
+     * Contains the texture coordinates for all vertices.
+     */
+    private Point2DBuffer texCoords;
+
+    /**
+     * Contains indices into the buffer of vertices and normals. Each set of 3
+     * indices forms a triangle.
+     */
+    private IntBuffer indices;
+
+    /**
+     * The name of the vertex buffer according to OpenGL
+     */
+    private int verticesName;
+    
+    /**
+     * The name of the normal buffer according to OpenGL
+     */
+    private int normalsName;
+    
+    /**
+     * The name of the normal buffer according to OpenGL
+     */
+    private int texCoordsName;
+
+    /**
+     * The name of the indices buffer according to OpenGL
+     */
+    private int indicesName;
 
     /**
      * Create a new terrain
@@ -99,6 +149,32 @@ public class Terrain {
 
         // TODO: Implement this
         
+        /**
+         * 
+         * (x0,0,z0)  (x1,0.5,z0)
+			   +-----+
+			   |    /|
+			   |  /  |
+			   |/    |
+			   +-----+
+			(x0,0,z1)  (x1,0.3,z1)
+         */
+        
+        
+        if(x<0 || x>width ||z<0 || z>depth) {
+        	return altitude;
+        }
+        
+        float x_remain = x % 1;
+        float z_remain = z % 1;
+        int x0 = (int) x;
+        int z0 = (int) z;
+        int x1 = x0<width-1?x0+1:x0;
+        int z1 = z0<depth-1?z0+1:z0;
+        float a0 = ((1-x_remain)*altitudes[x0][z0]) + (x_remain*altitudes[x1][z0]);
+        float a1 = ((1-x_remain)*altitudes[x0][z1]) + (x_remain*altitudes[x1][z1]);
+        altitude = ((1-z_remain)*a0)+(z_remain*a1);
+
         return altitude;
     }
 
@@ -126,5 +202,70 @@ public class Terrain {
         Road road = new Road(width, spine);
         roads.add(road);        
     }
+    
+  
+    
+    
+    public void init(GL3 gl) {
+        // Generate the names for the buffers.
+        int[] names = new int[4];
+        gl.glGenBuffers(4, names, 0);
+        verticesName = names[0];
+        indicesName = names[1];
+        normalsName = names[2];
+        texCoordsName = names[3];
 
+        // Copy the data for the vertices
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
+        gl.glBufferData(GL.GL_ARRAY_BUFFER,
+                vertices.capacity() * 3 * Float.BYTES, vertices.getBuffer(),
+                GL.GL_STATIC_DRAW);
+        
+        if (normals != null) {
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER,
+                    normals.capacity() * 3 * Float.BYTES, normals.getBuffer(),
+                    GL.GL_STATIC_DRAW);
+        }
+        
+        if (texCoords != null) {
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
+            gl.glBufferData(GL.GL_ARRAY_BUFFER,
+                    texCoords.capacity() * 2 * Float.BYTES, texCoords.getBuffer(),
+                    GL.GL_STATIC_DRAW);
+        }
+
+        if (indices != null) {
+            // Copy the data for the indices
+            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER,
+                    indices.capacity() * Integer.BYTES, indices, GL.GL_STATIC_DRAW);
+        }
+    }
+
+    public void draw(GL3 gl, CoordFrame3D frame) {
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
+
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
+        gl.glVertexAttribPointer(Shader.POSITION, 3, GL.GL_FLOAT, false, 0, 0);
+        if (normals != null) {
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
+            gl.glVertexAttribPointer(Shader.NORMAL, 3, GL.GL_FLOAT, false, 0, 0);
+        }
+        if (texCoords != null) {
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
+            gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
+        }
+        Shader.setModelMatrix(gl, frame.getMatrix());
+        if (indices != null) {
+            gl.glDrawElements(GL3.GL_TRIANGLES, indices.capacity(),
+                    GL.GL_UNSIGNED_INT, 0);
+        } else {
+            gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertices.capacity());
+        }
+    }
+    
+    public void draw(GL3 gl) {
+        draw(gl, CoordFrame3D.identity());
+    }
 }
