@@ -5,6 +5,7 @@ package unsw.graphics.world;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.smurn.jply.Element;
@@ -12,6 +13,7 @@ import org.smurn.jply.ElementReader;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.util.GLBuffers;
 
 import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Point2DBuffer;
@@ -20,6 +22,7 @@ import unsw.graphics.Shader;
 import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Point3D;
+import unsw.graphics.geometry.TriangleMesh;
 
 
 
@@ -36,7 +39,8 @@ public class Terrain {
     private List<Tree> trees;
     private List<Road> roads;
     private Vector3 sunlight;
-    private Point3DBuffer vertices;
+    private Point3DBuffer vertexBuffer;
+    private IntBuffer indicesBuffer;
 
     /**
      * Contains the normals for all vertices.
@@ -208,18 +212,53 @@ public class Terrain {
     
     public void init(GL3 gl) {
         // Generate the names for the buffers.
-        int[] names = new int[4];
-        gl.glGenBuffers(4, names, 0);
+
+        int dx, dz, index_vert, cnt;
+        
+        List<Point3D> p_list = new ArrayList<Point3D>();
+        
+        
+        
+        index_vert=0;
+        for(dz=0; dz<depth; dz++){
+        	for(dx=0; dx<width; dx++){
+        		p_list.add(new Point3D(dx, altitudes[dz][dx], dz));
+        	}
+        }
+        
+        vertexBuffer = new Point3DBuffer(p_list);
+        
+        int[] i_list = new int[3*2*(width-1)*(depth-1)];
+        
+        index_vert=0;
+        cnt = 0;
+        
+        for(dz=0; dz<depth-1; dz++){
+        	for(dx=0; dx<width-1; dx++){
+        		index_vert = dz*width+dx;
+        		i_list[cnt++] = (index_vert);
+        		i_list[cnt++] = (index_vert+width);
+        		i_list[cnt++] = (index_vert+1);
+        		
+        		i_list[cnt++] = (index_vert+1);
+        		i_list[cnt++] = (index_vert+width);
+        		i_list[cnt++] = (index_vert+width+1);
+        	}
+        }
+        
+        indicesBuffer = GLBuffers.newDirectIntBuffer(i_list);
+        
+        
+        int[] names = new int[2];
+        gl.glGenBuffers(2, names, 0);
+        
         verticesName = names[0];
         indicesName = names[1];
-        normalsName = names[2];
-        texCoordsName = names[3];
-
+        
         // Copy the data for the vertices
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
-        gl.glBufferData(GL.GL_ARRAY_BUFFER,
-                vertices.capacity() * 3 * Float.BYTES, vertices.getBuffer(),
-                GL.GL_STATIC_DRAW);
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexBuffer.capacity() * 3 * Float.BYTES, 
+        		vertexBuffer.getBuffer(),GL.GL_STATIC_DRAW);
         
         if (normals != null) {
             gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
@@ -235,15 +274,17 @@ public class Terrain {
                     GL.GL_STATIC_DRAW);
         }
 
-        if (indices != null) {
+        if (indicesBuffer != null) {
             // Copy the data for the indices
             gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
-            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER,
-                    indices.capacity() * Integer.BYTES, indices, GL.GL_STATIC_DRAW);
+            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.capacity() * Integer.BYTES,
+                    indicesBuffer, GL.GL_STATIC_DRAW);
         }
     }
 
     public void draw(GL3 gl, CoordFrame3D frame) {
+
+    	
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
 
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
@@ -257,15 +298,17 @@ public class Terrain {
             gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
         }
         Shader.setModelMatrix(gl, frame.getMatrix());
-        if (indices != null) {
-            gl.glDrawElements(GL3.GL_TRIANGLES, indices.capacity(),
+        if (indicesBuffer != null) {
+            gl.glDrawElements(GL3.GL_TRIANGLES, indicesBuffer.capacity(),
                     GL.GL_UNSIGNED_INT, 0);
         } else {
-            gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertices.capacity());
+            gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertexBuffer.capacity());
         }
     }
     
     public void draw(GL3 gl) {
         draw(gl, CoordFrame3D.identity());
     }
+    
+    
 }

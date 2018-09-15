@@ -3,7 +3,9 @@ package unsw.graphics.examples;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
@@ -15,6 +17,7 @@ import unsw.graphics.Matrix4;
 import unsw.graphics.Point3DBuffer;
 import unsw.graphics.Shader;
 import unsw.graphics.geometry.Point3D;
+import unsw.graphics.geometry.Polygon2D;
 import unsw.graphics.geometry.TriangleMesh;
 
 /**
@@ -83,30 +86,96 @@ public class IndexedCube extends Application3D {
     @Override
     public void init(GL3 gl) {
         super.init(gl);
-        vertexBuffer = new Point3DBuffer(Arrays.asList(
-                new Point3D(-1,-1,1), 
-                new Point3D(1,-1,1), 
-                new Point3D(1,1,1),
-                new Point3D(-1,1,1),
-                new Point3D(-1,-1,-1), 
-                new Point3D(1,-1,-1), 
-                new Point3D(1,1,-1),
-                new Point3D(-1,1,-1)));
+//        vertexBuffer = new Point3DBuffer(Arrays.asList(
+//                new Point3D(-1,-1,1), 
+//                new Point3D(1,-1,1), 
+//                new Point3D(1,1,1),
+//                new Point3D(-1,1,1),
+//                new Point3D(-1,-1,-1), 
+//                new Point3D(1,-1,-1), 
+//                new Point3D(1,1,-1)
+//                ));
+        //vertexBuffer = new Point3DBuffer(Arrays.asList());
         
-        indicesBuffer = GLBuffers.newDirectIntBuffer(new int[] {
-            0,1,2,
-            2,3,0,
-            1,5,6,
-            6,2,1,
-            5,4,7,
-            7,6,5,
-            4,0,3,
-            3,7,4,
-            3,2,6,
-            6,7,3,
-            4,5,1,
-            1,0,4
-        });
+        List<Point3D> p = new ArrayList<Point3D>();
+        
+        p.add(new Point3D(-1,-1,1));
+        p.add(new Point3D(1,-1,1));
+        p.add(new Point3D(1,1,1));
+        p.add(new Point3D(-1,1,1));
+        p.add(new Point3D(-1,-1,-1));
+        p.add(new Point3D(1,-1,-1));
+        p.add(new Point3D(1,1,-1));
+        p.add(new Point3D(-1,1,-1));
+        
+        vertexBuffer = new Point3DBuffer(p);
+//        vertexBuffer.put(0, new Point3D(-1,-1,1));
+//        vertexBuffer.put(0, new Point3D(1,-1,1));
+//        vertexBuffer.put(0, new Point3D(1,1,1));
+//        vertexBuffer.put(0, new Point3D(-1,1,1));
+//        vertexBuffer.put(0, new Point3D(-1,-1,-1));
+//        vertexBuffer.put(0, new Point3D(1,-1,-1));
+//        vertexBuffer.put(0, new Point3D(1,1,-1));
+//        vertexBuffer.put(0, new Point3D(-1,1,-1));
+        
+        
+        int[] i_list = new int[36];
+        i_list[0] = 0;
+        i_list[1] = 1;
+        i_list[2] = 2;
+        i_list[3] = 2;
+        i_list[4] = 3;
+        i_list[5] = 0;
+        i_list[6] = 1;
+        i_list[7] = 5;
+        i_list[8] = 6;
+        i_list[9] = 6;
+        i_list[10] = 2;
+
+        i_list[11] = 1;
+        i_list[12] = 5;
+        i_list[13] = 4;
+        i_list[14] = 7;
+        i_list[15] = 7;
+        i_list[16] = 6;
+        i_list[17] = 5;
+        i_list[18] = 4;
+        i_list[19] = 0;
+        i_list[20] = 3;
+
+        i_list[21] = 3;
+        i_list[22] = 7;
+        i_list[23] = 4;
+        i_list[24] = 3;
+        i_list[25] = 2;
+        i_list[26] = 6;
+        i_list[27] = 6;
+        i_list[28] = 7;
+        i_list[29] = 3;
+        i_list[30] = 4;
+
+        i_list[31] = 5;
+        i_list[32] = 1;
+        i_list[33] = 1;
+        i_list[34] = 0;
+        i_list[35] = 4;
+
+        indicesBuffer = GLBuffers.newDirectIntBuffer(i_list);
+        
+//        indicesBuffer = GLBuffers.newDirectIntBuffer(new int[] {
+//            0,1,2,
+//            2,3,0,
+//            1,5,6,
+//            6,2,1,
+//            5,4,7,
+//            7,6,5,
+//            4,0,3,
+//            3,7,4,
+//            3,2,6,
+//            6,7,3,
+//            4,5,1,
+//            1,0,4
+//        });
 
         int[] names = new int[2];
         gl.glGenBuffers(2, names, 0);
