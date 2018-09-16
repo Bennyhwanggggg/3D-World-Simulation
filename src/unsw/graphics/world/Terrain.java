@@ -2,6 +2,7 @@ package unsw.graphics.world;
 
 
 
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Point2DBuffer;
 import unsw.graphics.Point3DBuffer;
 import unsw.graphics.Shader;
+import unsw.graphics.Texture;
 import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point2D;
 import unsw.graphics.geometry.Point3D;
@@ -41,6 +43,7 @@ public class Terrain {
     private Vector3 sunlight;
     private Point3DBuffer vertexBuffer;
     private IntBuffer indicesBuffer;
+    private Texture texture;
 
     /**
      * Contains the normals for all vertices.
@@ -215,11 +218,11 @@ public class Terrain {
 
         int dx, dz, index_vert, cnt;
         
+        
+        // vertex
+        // ==========================================================
         List<Point3D> p_list = new ArrayList<Point3D>();
-        
-        
-        
-        index_vert=0;
+
         for(dz=0; dz<depth; dz++){
         	for(dx=0; dx<width; dx++){
         		p_list.add(new Point3D(dx, altitudes[dz][dx], dz));
@@ -228,6 +231,21 @@ public class Terrain {
         
         vertexBuffer = new Point3DBuffer(p_list);
         
+        // texture
+        // ==========================================================
+        List<Point2D> t_list = new ArrayList<Point2D>();
+        for(dz=0; dz<depth; dz++){
+        	for(dx=0; dx<width; dx++){
+        		t_list.add(new Point2D((float)dz/(depth-1), (float)dx/(width-1)));
+        	}
+        }
+        
+        texCoords = new Point2DBuffer(t_list);
+        
+        
+        
+        // indices
+        // ==========================================================
         int[] i_list = new int[3*2*(width-1)*(depth-1)];
         
         index_vert=0;
@@ -249,11 +267,14 @@ public class Terrain {
         indicesBuffer = GLBuffers.newDirectIntBuffer(i_list);
         
         
-        int[] names = new int[2];
-        gl.glGenBuffers(2, names, 0);
+        
+        
+        int[] names = new int[3];
+        gl.glGenBuffers(3, names, 0);
         
         verticesName = names[0];
-        indicesName = names[1];
+        texCoordsName = names[1];
+        indicesName = names[2];
         
         // Copy the data for the vertices
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
@@ -280,6 +301,17 @@ public class Terrain {
             gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.capacity() * Integer.BYTES,
                     indicesBuffer, GL.GL_STATIC_DRAW);
         }
+        
+        
+
+		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
+        shader.use(gl);
+        
+
+        texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
+        gl.glActiveTexture(GL.GL_TEXTURE0);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+        
     }
 
     public void draw(GL3 gl, CoordFrame3D frame) {
@@ -296,6 +328,7 @@ public class Terrain {
         if (texCoords != null) {
             gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
             gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
+            
         }
         Shader.setModelMatrix(gl, frame.getMatrix());
         if (indicesBuffer != null) {

@@ -1,14 +1,17 @@
 package unsw.graphics.world;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.Application3D;
 import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
+import unsw.graphics.Texture;
 
 
 
@@ -21,6 +24,7 @@ public class World extends Application3D {
 
     private Terrain terrain;
     private float rotationY;
+    private Texture texture;
 
     public World(Terrain terrain) {
     	super("Assignment 2", 800, 600);
@@ -48,9 +52,16 @@ public class World extends Application3D {
 	@Override
 	public void display(GL3 gl) {
 		super.display(gl);
+		
+		// texture
+		
+
+
+
+        Shader.setPenColor(gl, Color.WHITE);
         CoordFrame3D frame = CoordFrame3D.identity()
-                .translate(0, -2, -5)
-                .scale(0.2f, 0.2f, 0.2f);
+                .translate(0, -1, -5)
+                .scale(0.3f, 0.3f, 0.3f);
 		terrain.draw(gl, frame.rotateY(rotationY));
 		rotationY += 1;
 	}

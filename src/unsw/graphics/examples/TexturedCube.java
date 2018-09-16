@@ -61,7 +61,7 @@ public class TexturedCube extends Application3D {
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
         
-        Shader.setPenColor(gl, Color.WHITE);
+        Shader.setPenColor(gl, Color.BLUE);
        
         CoordFrame3D frame = CoordFrame3D.identity()
                 .translate(0, 0, -2)
@@ -152,7 +152,7 @@ public class TexturedCube extends Application3D {
         Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
         shader.use(gl);
         
-        texture = new Texture(gl, "res/textures/canLabel.bmp", "bmp", false);
+          texture = new Texture(gl, "res/textures/canLabel.bmp", "bmp", false);
     }
     
     @Override
