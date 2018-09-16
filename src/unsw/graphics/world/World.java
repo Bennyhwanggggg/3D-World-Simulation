@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 
@@ -20,11 +22,13 @@ import unsw.graphics.Texture;
  *
  * @author malcolmr
  */
-public class World extends Application3D {
+public class World extends Application3D implements KeyListener {
 
     private Terrain terrain;
     private float rotationY;
     private Texture texture;
+    private float cam_x;
+    private float cam_y;
 
     public World(Terrain terrain) {
     	super("Assignment 2", 800, 600);
@@ -60,10 +64,12 @@ public class World extends Application3D {
 
         Shader.setPenColor(gl, Color.WHITE);
         CoordFrame3D frame = CoordFrame3D.identity()
-                .translate(0, -1, -5)
+                .translate(0, 0, 0-cam_x)
+                .rotateY(cam_y)
                 .scale(0.3f, 0.3f, 0.3f);
-		terrain.draw(gl, frame.rotateY(rotationY));
-		rotationY += 1;
+        //Shader.setViewMatrix(gl, frame.getMatrix());
+		terrain.draw(gl, frame);
+		//rotationY += 1;
 	}
 
 	@Override
@@ -75,6 +81,7 @@ public class World extends Application3D {
 	@Override
 	public void init(GL3 gl) {
 		super.init(gl);
+		getWindow().addKeyListener(this);
 		terrain.init(gl);
 		
 		
@@ -85,4 +92,37 @@ public class World extends Application3D {
         super.reshape(gl, width, height);
         Shader.setProjMatrix(gl, Matrix4.perspective(60, width/(float)height, 1, 100));
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		switch (e.getKeyCode()) {
+        
+        case KeyEvent.VK_UP:
+            cam_x -= 0.2;
+          
+            break;
+        case KeyEvent.VK_DOWN:
+            cam_x += 0.2;
+            break;
+        case KeyEvent.VK_RIGHT:
+            cam_y += 10;
+          
+            break;
+        case KeyEvent.VK_LEFT:
+            cam_y -= 10;
+            break;
+        default:
+            break;
+        }
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+    
 }
