@@ -3,6 +3,7 @@ package unsw.graphics.world;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
@@ -48,7 +49,6 @@ public class World extends Application3D implements KeyListener {
     	
         //Terrain terrain = LevelIO.load(new File(args[0]));
     	Terrain terrain = LevelIO.load(new File("res/worlds/test1.json"));
-    	
         World world = new World(terrain);
         world.start();
     }
@@ -69,6 +69,7 @@ public class World extends Application3D implements KeyListener {
                 .scale(0.3f, 0.3f, 0.3f);
         //Shader.setViewMatrix(gl, frame.getMatrix());
 		terrain.draw(gl, frame);
+//		terrain.drawTrees(gl, frame);
 		//rotationY += 1;
 	}
 

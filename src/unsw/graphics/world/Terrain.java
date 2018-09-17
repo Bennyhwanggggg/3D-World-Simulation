@@ -191,6 +191,7 @@ public class Terrain {
      * 
      * @param x
      * @param z
+     * @throws IOException 
      */
     public void addTree(float x, float z) {
         float y = altitude(x, z);
@@ -313,10 +314,17 @@ public class Terrain {
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
         
     }
+    
+    public void drawTrees(GL3 gl, CoordFrame3D frame) {
+    	for (Tree t: trees) {
+    		t.draw(gl, frame);
+    	}
+    }
 
     public void draw(GL3 gl, CoordFrame3D frame) {
 
-    	
+
+
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
 
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
@@ -337,6 +345,7 @@ public class Terrain {
         } else {
             gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertexBuffer.capacity());
         }
+        drawTrees(gl, frame);
     }
     
     public void draw(GL3 gl) {
