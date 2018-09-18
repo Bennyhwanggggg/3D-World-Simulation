@@ -26,6 +26,7 @@ import unsw.graphics.Texture;
 public class World extends Application3D implements KeyListener {
 
     private Terrain terrain;
+    private Camera myCamera;
     private float rotationY;
     private Texture texture;
     private float cam_x;
@@ -36,7 +37,6 @@ public class World extends Application3D implements KeyListener {
     	rotationY = 0;
         this.terrain = terrain;
         
-   
     }
    
     /**
@@ -61,15 +61,15 @@ public class World extends Application3D implements KeyListener {
 		
 
 
-
-        Shader.setPenColor(gl, Color.WHITE);
-        CoordFrame3D frame = CoordFrame3D.identity()
-                .translate(0, 0, 0-cam_x)
-                .rotateY(cam_y)
-                .scale(0.3f, 0.3f, 0.3f);
-        //Shader.setViewMatrix(gl, frame.getMatrix());
-		terrain.draw(gl, frame);
-		//rotationY += 1;
+		// need to put camera onto terrain so when rotating, need to keep track of direction so you don't move away from terrain's coordinate frame
+//        Shader.setPenColor(gl, Color.WHITE);
+//        CoordFrame3D frame = CoordFrame3D.identity();
+//                .translate(0, 0, 0-cam_x)
+//                .rotateY(cam_y);
+//                .scale(0.1f, 0.1f, 0.3f);
+//        Shader.setViewMatrix(gl, frame.getMatrix());
+//		myCamera.update();
+		terrain.draw(gl);
 	}
 
 	@Override
@@ -82,9 +82,8 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
+		myCamera = new Camera(0f, 0f, 0f);
 		terrain.init(gl);
-		
-		
 	}
 
 	@Override
@@ -99,18 +98,16 @@ public class World extends Application3D implements KeyListener {
 		switch (e.getKeyCode()) {
         
         case KeyEvent.VK_UP:
-            cam_x -= 0.2;
-          
+        	myCamera.move(1, terrain); // integer is the speed
             break;
         case KeyEvent.VK_DOWN:
-            cam_x += 0.2;
+        	myCamera.move(-1, terrain);
             break;
         case KeyEvent.VK_RIGHT:
-            cam_y += 10;
-          
+            myCamera.turnRight(10f);
             break;
         case KeyEvent.VK_LEFT:
-            cam_y -= 10;
+            myCamera.turnLeft(10f);
             break;
         default:
             break;

@@ -44,6 +44,7 @@ public class Terrain {
     private Point3DBuffer vertexBuffer;
     private IntBuffer indicesBuffer;
     private Texture texture;
+    
 
     /**
      * Contains the normals for all vertices.
@@ -153,7 +154,8 @@ public class Terrain {
      */
     public float altitude(float x, float z) {
         float altitude = 0;
-
+        
+        System.out.println("Received these x, z in altitude " + x + " " + z);
         // TODO: Implement this
         
         /**
@@ -181,10 +183,10 @@ public class Terrain {
         float a0 = ((1-x_remain)*altitudes[x0][z0]) + (x_remain*altitudes[x1][z0]);
         float a1 = ((1-x_remain)*altitudes[x0][z1]) + (x_remain*altitudes[x1][z1]);
         altitude = ((1-z_remain)*a0)+(z_remain*a1);
-
+        System.out.println("Altitude is " + altitude);
         return altitude;
     }
-
+    
     /**
      * Add a tree at the specified (x,z) point. 
      * The tree's y coordinate is calculated from the altitude of the terrain at that point.
@@ -241,9 +243,7 @@ public class Terrain {
         	}
         }
         
-        texCoords = new Point2DBuffer(t_list);
-        
-        
+        texCoords = new Point2DBuffer(t_list);     
         
         // indices
         // ==========================================================
@@ -266,9 +266,6 @@ public class Terrain {
         }
         
         indicesBuffer = GLBuffers.newDirectIntBuffer(i_list);
-        
-        
-        
         
         int[] names = new int[3];
         gl.glGenBuffers(3, names, 0);
@@ -303,12 +300,9 @@ public class Terrain {
                     indicesBuffer, GL.GL_STATIC_DRAW);
         }
         
-        
-
 		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
         shader.use(gl);
-        
-
+       
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
@@ -323,8 +317,6 @@ public class Terrain {
 
     public void draw(GL3 gl, CoordFrame3D frame) {
 
-
-
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
 
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
@@ -338,7 +330,8 @@ public class Terrain {
             gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
             
         }
-        Shader.setModelMatrix(gl, frame.getMatrix());
+        Shader.setViewMatrix(gl, frame.getMatrix());
+        Shader.setPenColor(gl, Color.WHITE);
         if (indicesBuffer != null) {
             gl.glDrawElements(GL3.GL_TRIANGLES, indicesBuffer.capacity(),
                     GL.GL_UNSIGNED_INT, 0);
