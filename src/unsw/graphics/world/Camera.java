@@ -81,10 +81,10 @@ public class Camera {
 		System.out.println("New position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
-	public void update() {
-		GLU glu = new GLU();
-		glu.gluLookAt(pos.getX(), pos.getY(), pos.getZ(), pos.getX()+orientation.getX(), pos.getY()+
-				orientation.getY(), pos.getZ()+orientation.getZ(), 0, 1, 0);
-	}
+//	public void update() {
+//		GLU glu = new GLU();
+//		glu.gluLookAt(pos.getX(), pos.getY(), pos.getZ(), pos.getX()+orientation.getX(), pos.getY()+
+//				orientation.getY(), pos.getZ()+orientation.getZ(), 0, 1, 0);
+//	}
 
 }
