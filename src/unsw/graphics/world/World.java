@@ -69,7 +69,6 @@ public class World extends Application3D implements KeyListener {
                 .scale(0.3f, 0.3f, 0.3f);
         //Shader.setViewMatrix(gl, frame.getMatrix());
 		terrain.draw(gl, frame);
-//		terrain.drawTrees(gl, frame);
 		//rotationY += 1;
 	}
 
