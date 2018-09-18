@@ -26,7 +26,7 @@ public class Tree {
     private Texture texture;
     
     public Tree(float x, float y, float z) {
-        position = new Point3D(x, -y, z);
+        position = new Point3D(x, y, z);
         try {
         	model = new TriangleMesh("res/models/tree.ply", true, true);
         } catch (IOException e) {
@@ -42,6 +42,7 @@ public class Tree {
     public void draw(GL3 gl, CoordFrame3D frame) {
 
     	CoordFrame3D newFrame = frame.translate(position)
+    							.translate(0, 1.4f, 0)
     							.scale(0.3f, 0.3f, 0.3f);
     	
     	Shader.setPenColor(gl, BROWN);
