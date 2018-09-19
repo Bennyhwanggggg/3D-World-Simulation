@@ -31,6 +31,7 @@ public class World extends Application3D implements KeyListener {
     private Texture texture;
     private float cam_x;
     private float cam_y;
+    
 
     public World(Terrain terrain) {
     	super("Assignment 2", 800, 600);
@@ -64,12 +65,14 @@ public class World extends Application3D implements KeyListener {
 		// need to put camera onto terrain so when rotating, need to keep track of direction so you don't move away from terrain's coordinate frame
         Shader.setPenColor(gl, Color.WHITE);
         CoordFrame3D frame = CoordFrame3D.identity()
-                .translate(-myCamera.getPosition().getX(), -myCamera.getPosition().getY(), -5+myCamera.getPosition().getZ())
-                .rotateY(-myCamera.getAngle())
-                .scale(0.3f, 0.3f, 0.3f);
-//        Shader.setViewMatrix(gl, frame.getMatrix());
+        		.rotateY(-myCamera.getAngle())
+                .translate(-myCamera.getPosition().getX(), -(myCamera.getPosition().getY()+1f), -myCamera.getPosition().getZ());
+//                .rotateY(-myCamera.getAngle());
+//                .scale(0.3f, 0.3f, 0.3f);
+        //Shader.setViewMatrix(gl, frame.getMatrix());
 //		myCamera.update();
 		terrain.draw(gl, frame);
+		//terrain.drawTrees(gl, frame);
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
-		myCamera = new Camera(0f, 0f, 0f);
+		myCamera = new Camera(10f, 0f, 10f);
 		terrain.init(gl);
 	}
 
@@ -98,10 +101,10 @@ public class World extends Application3D implements KeyListener {
 		switch (e.getKeyCode()) {
         
         case KeyEvent.VK_UP:
-        	myCamera.move(0.2f, terrain); // integer is the speed
+        	myCamera.move(-0.2f, terrain); // integer is the speed
             break;
         case KeyEvent.VK_DOWN:
-        	myCamera.move(-0.2f, terrain);
+        	myCamera.move(0.2f, terrain);
             break;
         case KeyEvent.VK_RIGHT:
             myCamera.turnRight(10f);

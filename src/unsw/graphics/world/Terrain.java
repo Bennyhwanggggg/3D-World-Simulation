@@ -170,7 +170,7 @@ public class Terrain {
          */
         
         
-        if(x<0 || x>width ||z<0 || z>depth) {
+        if(x<0 || x>=width ||z<0 || z>=depth) {
         	return altitude;
         }
         
@@ -178,6 +178,7 @@ public class Terrain {
         float z_remain = z % 1;
         int x0 = (int) x;
         int z0 = (int) z;
+        System.out.println("x0, z0," + x0 + " " + z0);
         int x1 = x0<width-1?x0+1:x0;
         int z1 = z0<depth-1?z0+1:z0;
         float a0 = ((1-x_remain)*altitudes[x0][z0]) + (x_remain*altitudes[x1][z0]);
@@ -214,7 +215,13 @@ public class Terrain {
     }
     
   
+    public int getWidth() {
+    	return width;
+    }
     
+    public int getDepth() {
+    	return depth;
+    }
     
     public void init(GL3 gl) {
         // Generate the names for the buffers.
@@ -314,9 +321,12 @@ public class Terrain {
     		t.draw(gl, frame);
     	}
     }
-
+    
+    
     public void draw(GL3 gl, CoordFrame3D frame) {
-
+    	
+    	
+    	
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
 
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
@@ -338,7 +348,9 @@ public class Terrain {
         } else {
             gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertexBuffer.capacity());
         }
+        
         drawTrees(gl, frame);
+        
     }
     
     public void draw(GL3 gl) {

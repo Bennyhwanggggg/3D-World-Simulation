@@ -18,6 +18,7 @@ public class Camera {
 	private Point3D pos;
 	private float angle; // degrees
 	private Vector3 orientation;
+	int camera_mode; 
 	
 	public Camera(float x, float y, float z) {
 		pos = new Point3D(x, y, z);
@@ -75,15 +76,20 @@ public class Camera {
 		}
 		angle %= 360;
 		changeOrientation();
+		
 	}
 	
+
 	public void move(float d, Terrain terrain) { // input d is positive for moving forward and negative for moving backward
 		System.out.println("position before is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
-		pos = new Point3D(pos.getX()+orientation.getX()*d, pos.getY(), pos.getZ()+orientation.getZ()*d);
+		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
+//		pos = new Point3D(pos.getX(),  pos.getY(),  pos.getZ()+d);
 		System.out.println("position after translation: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
 		System.out.println("New position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
+	
+    
 	
 //	public void update() {
 //		GLU glu = new GLU();

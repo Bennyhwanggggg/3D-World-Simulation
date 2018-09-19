@@ -46,7 +46,7 @@ public class Tree {
     							.scale(0.3f, 0.3f, 0.3f);
     	
     	Shader.setPenColor(gl, BROWN);
-
+//    	System.out.println("Tree is at " + position.getX() + " " + position.getY() + " " + position.getZ());
     	model.init(gl);
     	model.draw(gl, newFrame);
     }
