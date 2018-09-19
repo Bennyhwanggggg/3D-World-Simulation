@@ -38,7 +38,7 @@ public class World extends Application3D implements KeyListener {
         this.terrain = terrain;
         
     }
-   
+    
     /**
      * Load a level file and display it.
      * 
@@ -62,14 +62,14 @@ public class World extends Application3D implements KeyListener {
 
 
 		// need to put camera onto terrain so when rotating, need to keep track of direction so you don't move away from terrain's coordinate frame
-//        Shader.setPenColor(gl, Color.WHITE);
-//        CoordFrame3D frame = CoordFrame3D.identity();
-//                .translate(0, 0, 0-cam_x)
-//                .rotateY(cam_y);
-//                .scale(0.1f, 0.1f, 0.3f);
+        Shader.setPenColor(gl, Color.WHITE);
+        CoordFrame3D frame = CoordFrame3D.identity()
+                .translate(-myCamera.getPosition().getX(), -myCamera.getPosition().getY(), -5+myCamera.getPosition().getZ())
+                .rotateY(-myCamera.getAngle())
+                .scale(0.3f, 0.3f, 0.3f);
 //        Shader.setViewMatrix(gl, frame.getMatrix());
 //		myCamera.update();
-		terrain.draw(gl);
+		terrain.draw(gl, frame);
 	}
 
 	@Override
@@ -98,10 +98,10 @@ public class World extends Application3D implements KeyListener {
 		switch (e.getKeyCode()) {
         
         case KeyEvent.VK_UP:
-        	myCamera.move(1, terrain); // integer is the speed
+        	myCamera.move(0.2f, terrain); // integer is the speed
             break;
         case KeyEvent.VK_DOWN:
-        	myCamera.move(-1, terrain);
+        	myCamera.move(-0.2f, terrain);
             break;
         case KeyEvent.VK_RIGHT:
             myCamera.turnRight(10f);

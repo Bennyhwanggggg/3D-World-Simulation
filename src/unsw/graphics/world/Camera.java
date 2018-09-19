@@ -35,6 +35,10 @@ public class Camera {
 		return pos;
 	}
 	
+	public float getAngle() {
+		return angle;
+	}
+	
 	private void changeOrientation() {
 		float dx, dz;
 		if (angle <= 90 || angle >= 270) {
