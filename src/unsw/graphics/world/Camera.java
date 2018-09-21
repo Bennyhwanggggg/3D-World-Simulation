@@ -22,13 +22,13 @@ public class Camera {
 	
 	public Camera(float x, float y, float z) {
 		pos = new Point3D(x, y, z);
-		orientation = new Vector3(0, 0, 1); // set initial direction to face z axis
+		orientation = new Vector3(1, 0, 0); // set initial direction to face z axis
 		angle = 0;
 	}
 	
 	public Camera(Point3D position) {
 		pos = position;
-		orientation = new Vector3(0, 0, 1);
+		orientation = new Vector3(1, 0, 0);
 		angle = 0;
 	}
 	
@@ -56,6 +56,7 @@ public class Camera {
 			orientation = new Vector3(dx, 0, dz).normalize();
 		}
 		System.out.println("Orientation is " + orientation.getX() + " " + orientation.getZ());
+		System.out.println("Angle is " + angle);
 	}
 	
 	public void turnRight(float deg) {
@@ -83,18 +84,10 @@ public class Camera {
 	public void move(float d, Terrain terrain) { // input d is positive for moving forward and negative for moving backward
 		System.out.println("position before is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
-//		pos = new Point3D(pos.getX(),  pos.getY(),  pos.getZ()+d);
 		System.out.println("position after translation: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
 		System.out.println("New position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
-    
-	
-//	public void update() {
-//		GLU glu = new GLU();
-//		glu.gluLookAt(pos.getX(), pos.getY(), pos.getZ(), pos.getX()+orientation.getX(), pos.getY()+
-//				orientation.getY(), pos.getZ()+orientation.getZ(), 0, 1, 0);
-//	}
 
 }

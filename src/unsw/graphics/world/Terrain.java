@@ -325,8 +325,6 @@ public class Terrain {
     
     public void draw(GL3 gl, CoordFrame3D frame) {
     	
-    	
-    	
         gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
 
         gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
@@ -340,7 +338,7 @@ public class Terrain {
             gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
             
         }
-        Shader.setViewMatrix(gl, frame.getMatrix());
+        Shader.setModelMatrix(gl, frame.getMatrix());
         Shader.setPenColor(gl, Color.WHITE);
         if (indicesBuffer != null) {
             gl.glDrawElements(GL3.GL_TRIANGLES, indicesBuffer.capacity(),
@@ -348,9 +346,7 @@ public class Terrain {
         } else {
             gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertexBuffer.capacity());
         }
-        
         drawTrees(gl, frame);
-        
     }
     
     public void draw(GL3 gl) {

@@ -42,11 +42,11 @@ public class Tree {
     public void draw(GL3 gl, CoordFrame3D frame) {
 
     	CoordFrame3D newFrame = frame.translate(position)
-    							.translate(0, 1.4f, 0)
-    							.scale(0.3f, 0.3f, 0.3f);
+    			.translate(0f, 1.4f, 0f)
+    			.scale(0.3f, 0.3f, 0.3f);
     	
     	Shader.setPenColor(gl, BROWN);
-//    	System.out.println("Tree is at " + position.getX() + " " + position.getY() + " " + position.getZ());
+
     	model.init(gl);
     	model.draw(gl, newFrame);
     }

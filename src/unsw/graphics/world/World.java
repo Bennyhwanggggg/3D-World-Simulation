@@ -66,13 +66,11 @@ public class World extends Application3D implements KeyListener {
         Shader.setPenColor(gl, Color.WHITE);
         CoordFrame3D frame = CoordFrame3D.identity()
         		.rotateY(-myCamera.getAngle())
-                .translate(-myCamera.getPosition().getX(), -(myCamera.getPosition().getY()+1f), -myCamera.getPosition().getZ());
-//                .rotateY(-myCamera.getAngle());
-//                .scale(0.3f, 0.3f, 0.3f);
-        //Shader.setViewMatrix(gl, frame.getMatrix());
-//		myCamera.update();
-		terrain.draw(gl, frame);
-		//terrain.drawTrees(gl, frame);
+        		.translate(-myCamera.getPosition().getX(), -(myCamera.getPosition().getY()+1f), -myCamera.getPosition().getZ());
+
+        Shader.setViewMatrix(gl, frame.getMatrix());
+//        Shader.setProjMatrix(gl, Matrix4.frustum(-1f, 1f, -1f, 1f, 1f, 100f));
+		terrain.draw(gl);
 	}
 
 	@Override
@@ -85,7 +83,7 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
-		myCamera = new Camera(10f, 0f, 10f);
+		myCamera = new Camera(0f, 0f, 0f);
 		terrain.init(gl);
 	}
 
