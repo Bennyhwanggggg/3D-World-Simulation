@@ -15,6 +15,7 @@ import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
 import unsw.graphics.Texture;
+import unsw.graphics.geometry.Point3D;
 
 
 
@@ -70,6 +71,9 @@ public class World extends Application3D implements KeyListener {
 
         Shader.setViewMatrix(gl, frame.getMatrix());
 //        Shader.setProjMatrix(gl, Matrix4.frustum(-1f, 1f, -1f, 1f, 1f, 100f));
+        
+
+        
 		terrain.draw(gl);
 	}
 
@@ -83,7 +87,7 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
-		myCamera = new Camera(0f, 0f, 0f);
+		myCamera = new Camera(5f, 5f, 20f);
 		terrain.init(gl);
 	}
 
