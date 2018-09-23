@@ -46,6 +46,7 @@ public class Tree {
     			.scale(0.3f, 0.3f, 0.3f);
     	
     	Shader.setPenColor(gl, BROWN);
+//    	Shader.setModelMatrix(gl, newFrame.getMatrix());
 
     	model.init(gl);
     	model.draw(gl, newFrame);

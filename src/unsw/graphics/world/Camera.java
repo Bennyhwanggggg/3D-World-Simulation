@@ -32,6 +32,12 @@ public class Camera {
 		angle = 0;
 	}
 	
+	public Camera(float x, float z, Terrain terrain) {
+		pos = new Point3D(x, terrain.altitude(x, z), z);
+		orientation = new Vector3(1, 0, 0);
+		angle = 0;
+	}
+	
 	public Point3D getPosition() {
 		return pos;
 	}
@@ -82,11 +88,9 @@ public class Camera {
 	
 
 	public void move(float d, Terrain terrain) { // input d is positive for moving forward and negative for moving backward
-		System.out.println("position before is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
-		System.out.println("position after translation: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
-		System.out.println("New position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
+		System.out.println("position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
 

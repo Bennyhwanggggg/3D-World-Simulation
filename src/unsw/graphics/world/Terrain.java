@@ -235,7 +235,8 @@ public class Terrain {
 
         for(dz=0; dz<depth; dz++){
         	for(dx=0; dx<width; dx++){
-        		p_list.add(new Point3D(dx, altitudes[dz][dx], dz));
+//        		p_list.add(new Point3D(dx, altitudes[dz][dx], dz));
+        		p_list.add(new Point3D(dx, altitudes[dx][dz], dz));
         	}
         }
         
@@ -310,7 +311,7 @@ public class Terrain {
         
 		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
 //		shader = new Shader(gl, "shaders/vertex_tex_phong.glsl", "shaders/fragment_tex_phong.glsl");
-        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
+//        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
 //        shader = new Shader(gl, "shaders/vertex_phong.glsl", "shaders/fragment_phong.glsl");
 		
         shader.use(gl);
@@ -326,7 +327,7 @@ public class Terrain {
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
         
         Shader.setColor(gl, "lightIntensity", Color.WHITE);
-        Shader.setColor(gl, "ambientIntensity", new Color(0.2f, 0.2f, 0.2f));
+        Shader.setColor(gl, "ambientIntensity", new Color(0.7f, 0.7f, 0.7f));
         
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);

@@ -50,7 +50,7 @@ public class World extends Application3D implements KeyListener {
     public static void main(String[] args) throws FileNotFoundException {
     	
         //Terrain terrain = LevelIO.load(new File(args[0]));
-    	Terrain terrain = LevelIO.load(new File("res/worlds/test1.json"));
+    	Terrain terrain = LevelIO.load(new File("res/worlds/test7.json"));
         World world = new World(terrain);
         world.start();
     }
@@ -87,7 +87,8 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
-		myCamera = new Camera(0f, 0f, 0f);
+//		myCamera = new Camera(0f, 4f, 0f);
+		myCamera = new Camera(0f, 0f, terrain);
 		terrain.init(gl);
 	}
 
