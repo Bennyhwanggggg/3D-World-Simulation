@@ -87,7 +87,7 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
-		myCamera = new Camera(5f, 5f, 20f);
+		myCamera = new Camera(0f, 0f, 0f);
 		terrain.init(gl);
 	}
 
