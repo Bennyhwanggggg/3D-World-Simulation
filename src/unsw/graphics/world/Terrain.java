@@ -309,7 +309,7 @@ public class Terrain {
         }
         
 		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
-        shader = new Shader(gl, "shaders/vertex_tex_phong.glsl", "shaders/fragment_tex_phong.glsl");	// lighting
+        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
         shader.use(gl);
        
         
@@ -323,12 +323,12 @@ public class Terrain {
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
         
         Shader.setColor(gl, "lightIntensity", Color.WHITE);
-        Shader.setColor(gl, "ambientIntensity", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setColor(gl, "ambientIntensity", new Color(0.2f, 0.2f, 0.2f));
         
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
         Shader.setColor(gl, "diffuseCoeff", new Color(0.5f, 0.5f, 0.5f));
-        Shader.setColor(gl, "specularCoeff", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setColor(gl, "specularCoeff", new Color(1.0f, 1.0f, 1.0f));
         Shader.setFloat(gl, "phongExp", 32f);
         
         
