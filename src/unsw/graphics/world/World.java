@@ -28,15 +28,11 @@ public class World extends Application3D implements KeyListener {
 
     private Terrain terrain;
     private Camera myCamera;
-    private float rotationY;
     private Texture texture;
-    private float cam_x;
-    private float cam_y;
-    
+
 
     public World(Terrain terrain) {
     	super("Assignment 2", 800, 600);
-    	rotationY = 0;
         this.terrain = terrain;
         
     }
@@ -50,7 +46,7 @@ public class World extends Application3D implements KeyListener {
     public static void main(String[] args) throws FileNotFoundException {
     	
         //Terrain terrain = LevelIO.load(new File(args[0]));
-    	Terrain terrain = LevelIO.load(new File("res/worlds/test7.json"));
+    	Terrain terrain = LevelIO.load(new File("res/worlds/test1.json"));
         World world = new World(terrain);
         world.start();
     }
@@ -60,8 +56,6 @@ public class World extends Application3D implements KeyListener {
 		super.display(gl);
 		
 		// texture
-		
-
 
 		// need to put camera onto terrain so when rotating, need to keep track of direction so you don't move away from terrain's coordinate frame
         Shader.setPenColor(gl, Color.WHITE);
@@ -70,10 +64,6 @@ public class World extends Application3D implements KeyListener {
         		.translate(-myCamera.getPosition().getX(), -(myCamera.getPosition().getY()+1f), -myCamera.getPosition().getZ());
 
         Shader.setViewMatrix(gl, frame.getMatrix());
-//        Shader.setProjMatrix(gl, Matrix4.frustum(-1f, 1f, -1f, 1f, 1f, 100f));
-        
-
-        
 		terrain.draw(gl);
 	}
 
@@ -100,7 +90,6 @@ public class World extends Application3D implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
 		switch (e.getKeyCode()) {
         
         case KeyEvent.VK_UP:

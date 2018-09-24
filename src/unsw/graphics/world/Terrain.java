@@ -143,6 +143,7 @@ public class Terrain {
     public void setGridAltitude(int x, int z, float h) {
         altitudes[x][z] = h;
     }
+    
 
     /**
      * Get the altitude at an arbitrary point. 
@@ -170,7 +171,8 @@ public class Terrain {
          */
         
         
-        if(x<0 || x>=width ||z<0 || z>=depth) {
+//        if(x<0 || x>=width ||z<0 || z>=depth) {
+        if(x<0 || x>=width ||z<0 || z>=width) {
         	return altitude;
         }
         
@@ -225,27 +227,25 @@ public class Terrain {
     
     public void init(GL3 gl) {
         // Generate the names for the buffers.
-
         int dx, dz, index_vert, cnt;
-        
         
         // vertex
         // ==========================================================
         List<Point3D> p_list = new ArrayList<Point3D>();
 
-        for(dz=0; dz<depth; dz++){
+        for(dz=0; dz<width; dz++){
         	for(dx=0; dx<width; dx++){
 //        		p_list.add(new Point3D(dx, altitudes[dz][dx], dz));
         		p_list.add(new Point3D(dx, altitudes[dx][dz], dz));
         	}
         }
-        
+       
         vertexBuffer = new Point3DBuffer(p_list);
         
         // texture
         // ==========================================================
         List<Point2D> t_list = new ArrayList<Point2D>();
-        for(dz=0; dz<depth; dz++){
+        for(dz=0; dz<width; dz++){
         	for(dx=0; dx<width; dx++){
         		t_list.add(new Point2D((float)dz/(depth-1), (float)dx/(width-1)));
         	}
@@ -260,7 +260,7 @@ public class Terrain {
         index_vert=0;
         cnt = 0;
         
-        for(dz=0; dz<depth-1; dz++){
+        for(dz=0; dz<width-1; dz++){
         	for(dx=0; dx<width-1; dx++){
         		index_vert = dz*width+dx;
         		i_list[cnt++] = (index_vert);
@@ -309,17 +309,12 @@ public class Terrain {
                     indicesBuffer, GL.GL_STATIC_DRAW);
         }
         
-		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
-//		shader = new Shader(gl, "shaders/vertex_tex_phong.glsl", "shaders/fragment_tex_phong.glsl");
+//		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
+		Shader shader = new Shader(gl, "shaders/vertex_tex_phong.glsl", "shaders/fragment_tex_phong.glsl");
 //        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
 //        shader = new Shader(gl, "shaders/vertex_phong.glsl", "shaders/fragment_phong.glsl");
 		
         shader.use(gl);
-       
-        
-        
-        
-        
         
         // lighting
      // ===========================================
@@ -327,13 +322,13 @@ public class Terrain {
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
         
         Shader.setColor(gl, "lightIntensity", Color.WHITE);
-        Shader.setColor(gl, "ambientIntensity", new Color(0.7f, 0.7f, 0.7f));
+        Shader.setColor(gl, "ambientIntensity", new Color(0.2f, 0.2f, 0.2f));
         
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
         Shader.setColor(gl, "diffuseCoeff", new Color(0.5f, 0.5f, 0.5f));
-        Shader.setColor(gl, "specularCoeff", new Color(1.0f, 1.0f, 1.0f));
-        Shader.setFloat(gl, "phongExp", 22f);
+        Shader.setColor(gl, "specularCoeff", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setFloat(gl, "phongExp", 16f);
         
         
         // texture
