@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.smurn.jply.Element;
 import org.smurn.jply.ElementReader;
 
@@ -44,6 +45,7 @@ public class Terrain {
     private Point3DBuffer vertexBuffer;
     private IntBuffer indicesBuffer;
     private Texture texture;
+    private TriangleMesh mesh;
     
 
     /**
@@ -240,7 +242,7 @@ public class Terrain {
         	}
         }
        
-        vertexBuffer = new Point3DBuffer(p_list);
+//        vertexBuffer = new Point3DBuffer(p_list);
         
         // texture
         // ==========================================================
@@ -251,7 +253,7 @@ public class Terrain {
         	}
         }
         
-        texCoords = new Point2DBuffer(t_list);     
+//        texCoords = new Point2DBuffer(t_list);     
         
         // indices
         // ==========================================================
@@ -273,70 +275,78 @@ public class Terrain {
         	}
         }
         
-        indicesBuffer = GLBuffers.newDirectIntBuffer(i_list);
+        Integer[] index_list = ArrayUtils.toObject(i_list);
+        List<Integer> indice_points = Arrays.asList(index_list);
+        mesh = new TriangleMesh(p_list, indice_points, true, t_list);
+        mesh.init(gl);
         
-        int[] names = new int[3];
-        gl.glGenBuffers(3, names, 0);
+//        indicesBuffer = GLBuffers.newDirectIntBuffer(i_list);
+//        
+//        int[] names = new int[4];
+//        gl.glGenBuffers(4, names, 0);
+//        
+//        verticesName = names[0];
+//        indicesName = names[1];
+//        normalsName = names[2];
+//        texCoordsName = names[3];
+//        
+//        // Copy the data for the vertices
+//        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
+//        gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexBuffer.capacity() * 3 * Float.BYTES, 
+//        		vertexBuffer.getBuffer(),GL.GL_STATIC_DRAW);
+//        
+//        if (normals != null) {
+//            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
+//            gl.glBufferData(GL.GL_ARRAY_BUFFER,
+//                    normals.capacity() * 3 * Float.BYTES, normals.getBuffer(),
+//                    GL.GL_STATIC_DRAW);
+//        }
+//        
+//        if (texCoords != null) {
+//            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
+//            gl.glBufferData(GL.GL_ARRAY_BUFFER,
+//                    texCoords.capacity() * 2 * Float.BYTES, texCoords.getBuffer(),
+//                    GL.GL_STATIC_DRAW);
+//        }
+//
+//        if (indicesBuffer != null) {
+//            // Copy the data for the indices
+//            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
+//            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.capacity() * Integer.BYTES,
+//                    indicesBuffer, GL.GL_STATIC_DRAW);
+//        }
         
-        verticesName = names[0];
-        texCoordsName = names[1];
-        indicesName = names[2];
-        
-        
-        // Copy the data for the vertices
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, vertexBuffer.capacity() * 3 * Float.BYTES, 
-        		vertexBuffer.getBuffer(),GL.GL_STATIC_DRAW);
-        
-        if (normals != null) {
-            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
-            gl.glBufferData(GL.GL_ARRAY_BUFFER,
-                    normals.capacity() * 3 * Float.BYTES, normals.getBuffer(),
-                    GL.GL_STATIC_DRAW);
-        }
-        
-        if (texCoords != null) {
-            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
-            gl.glBufferData(GL.GL_ARRAY_BUFFER,
-                    texCoords.capacity() * 2 * Float.BYTES, texCoords.getBuffer(),
-                    GL.GL_STATIC_DRAW);
-        }
-
-        if (indicesBuffer != null) {
-            // Copy the data for the indices
-            gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
-            gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer.capacity() * Integer.BYTES,
-                    indicesBuffer, GL.GL_STATIC_DRAW);
-        }
+        // texture
+        // ========================================
+        texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
         
 //		Shader shader = new Shader(gl, "shaders/vertex_tex_3d.glsl", "shaders/fragment_tex_3d.glsl");
-		Shader shader = new Shader(gl, "shaders/vertex_tex_phong.glsl", "shaders/fragment_tex_phong.glsl");
-//        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
-//        shader = new Shader(gl, "shaders/vertex_phong.glsl", "shaders/fragment_phong.glsl");
+//		Shader shader = new Shader(gl, "shaders/vertex_tex_phong.glsl", "shaders/fragment_tex_phong.glsl");
+        Shader shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
+//        Shader shader = new Shader(gl, "shaders/vertex_phong.glsl", "shaders/fragment_phong.glsl");
 		
         shader.use(gl);
         
         // lighting
      // ===========================================
-        
-        Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
-        
-        Shader.setColor(gl, "lightIntensity", Color.WHITE);
-        Shader.setColor(gl, "ambientIntensity", new Color(0.2f, 0.2f, 0.2f));
-        
-        // Set the material properties
-        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
-        Shader.setColor(gl, "diffuseCoeff", new Color(0.5f, 0.5f, 0.5f));
-        Shader.setColor(gl, "specularCoeff", new Color(0.8f, 0.8f, 0.8f));
-        Shader.setFloat(gl, "phongExp", 16f);
+//        Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
+//        
+//        Shader.setColor(gl, "lightIntensity", Color.WHITE);
+//        Shader.setColor(gl, "ambientIntensity", new Color(0.2f, 0.2f, 0.2f));
+//        
+//        // Set the material properties
+//        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
+//        Shader.setColor(gl, "diffuseCoeff", new Color(0.5f, 0.5f, 0.5f));
+//        Shader.setColor(gl, "specularCoeff", new Color(0.8f, 0.8f, 0.8f));
+//        Shader.setFloat(gl, "phongExp", 16f);
         
         
         // texture
         // ===========================================
-        texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
-        Shader.setInt(gl, "tex", 0);
-        gl.glActiveTexture(GL.GL_TEXTURE0);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+//        texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
+//        Shader.setInt(gl, "tex", 0);
+//        gl.glActiveTexture(GL.GL_TEXTURE0);
+//        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
         
     }
     
@@ -349,27 +359,47 @@ public class Terrain {
     
     public void draw(GL3 gl, CoordFrame3D frame) {
     	
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
-
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
-        gl.glVertexAttribPointer(Shader.POSITION, 3, GL.GL_FLOAT, false, 0, 0);
-        if (normals != null) {
-            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
-            gl.glVertexAttribPointer(Shader.NORMAL, 3, GL.GL_FLOAT, false, 0, 0);
-        }
-        if (texCoords != null) {
-            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
-            gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
-            
-        }
-        Shader.setModelMatrix(gl, frame.getMatrix());
+    	// Bind Texture
+    	Shader.setInt(gl, "tex", 0);
+        gl.glActiveTexture(GL.GL_TEXTURE0);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+        
         Shader.setPenColor(gl, Color.WHITE);
-        if (indicesBuffer != null) {
-            gl.glDrawElements(GL3.GL_TRIANGLES, indicesBuffer.capacity(),
-                    GL.GL_UNSIGNED_INT, 0);
-        } else {
-            gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertexBuffer.capacity());
-        }
+        
+        Shader.setModelMatrix(gl, frame.getMatrix());
+        
+        // Set light properties
+        Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
+        Shader.setColor(gl, "lightIntensity", Color.WHITE);
+        Shader.setColor(gl, "ambientIntensity", new Color(0.5f, 0.5f, 0.5f));
+        
+        // Set the material properties
+        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
+        Shader.setColor(gl, "diffuseCoeff", new Color(0.9f, 0.9f, 0.9f));
+        Shader.setColor(gl, "specularCoeff", new Color(0.0f, 0.0f, 0.0f));
+        Shader.setFloat(gl, "phongExp", 16f);
+    	
+        mesh.draw(gl, frame);
+//        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indicesName);
+//
+//        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, verticesName);
+//        gl.glVertexAttribPointer(Shader.POSITION, 3, GL.GL_FLOAT, false, 0, 0);
+//        if (normals != null) {
+//            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, normalsName);
+//            gl.glVertexAttribPointer(Shader.NORMAL, 3, GL.GL_FLOAT, false, 0, 0);
+//        }
+//        if (texCoords != null) {
+//            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, texCoordsName);
+//            gl.glVertexAttribPointer(Shader.TEX_COORD, 2, GL.GL_FLOAT, false, 0, 0);
+//        }
+//        if (indicesBuffer != null) {
+//            gl.glDrawElements(GL3.GL_TRIANGLES, indicesBuffer.capacity(),
+//                    GL.GL_UNSIGNED_INT, 0);
+//        	
+//        } else {
+//            gl.glDrawArrays(GL3.GL_TRIANGLES, 0, vertexBuffer.capacity());
+//        }
+        
         drawTrees(gl, frame);
     }
     

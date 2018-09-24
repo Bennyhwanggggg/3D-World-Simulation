@@ -46,7 +46,12 @@ public class Tree {
     			.scale(0.3f, 0.3f, 0.3f);
     	
     	Shader.setPenColor(gl, BROWN);
-//    	Shader.setModelMatrix(gl, newFrame.getMatrix());
+    	
+    	// Set tree properites
+        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
+        Shader.setColor(gl, "diffuseCoeff", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setColor(gl, "specularCoeff", new Color(0.0f, 0.0f, 0.0f));
+        Shader.setFloat(gl, "phongExp", 16f);
 
     	model.init(gl);
     	model.draw(gl, newFrame);
