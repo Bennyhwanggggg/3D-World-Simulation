@@ -38,6 +38,10 @@ public class Tree {
         return position;
     }
     
+    public void init(GL3 gl) {
+    	model.init(gl);
+    }
+    
     
     public void draw(GL3 gl, CoordFrame3D frame) {
 
@@ -53,7 +57,7 @@ public class Tree {
         Shader.setColor(gl, "specularCoeff", new Color(0.0f, 0.0f, 0.0f));
         Shader.setFloat(gl, "phongExp", 16f);
 
-    	model.init(gl);
+//    	model.init(gl);
     	model.draw(gl, newFrame);
     }
     

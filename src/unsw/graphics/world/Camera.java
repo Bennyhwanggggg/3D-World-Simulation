@@ -18,24 +18,32 @@ public class Camera {
 	private Point3D pos;
 	private float angle; // degrees
 	private Vector3 orientation;
-	int camera_mode; 
+	
+	private boolean firstPerson;
+	private Avatar avatar;
 	
 	public Camera(float x, float y, float z) {
 		pos = new Point3D(x, y, z);
 		orientation = new Vector3(1, 0, 0); // set initial direction to face z axis
 		angle = 0;
+		firstPerson = true;
+		avatar = new Avatar(pos);
 	}
 	
 	public Camera(Point3D position) {
 		pos = position;
 		orientation = new Vector3(1, 0, 0);
 		angle = 0;
+		firstPerson = true;
+		avatar = new Avatar(pos);
 	}
 	
 	public Camera(float x, float z, Terrain terrain) {
 		pos = new Point3D(x, terrain.altitude(x, z), z);
 		orientation = new Vector3(1, 0, 0);
 		angle = 0;
+		firstPerson = true;
+		avatar = new Avatar(pos);
 	}
 	
 	public Point3D getPosition() {
@@ -44,6 +52,10 @@ public class Camera {
 	
 	public float getAngle() {
 		return angle;
+	}
+	
+	public boolean isFirstPersonMode() {
+		return this.firstPerson;
 	}
 	
 	private void changeOrientation() {
@@ -61,8 +73,8 @@ public class Camera {
 		} else {
 			orientation = new Vector3(dx, 0, dz).normalize();
 		}
-		System.out.println("Orientation is " + orientation.getX() + " " + orientation.getZ());
-		System.out.println("Angle is " + angle);
+		System.out.println("Camera orientation is " + orientation.getX() + " " + orientation.getZ());
+		System.out.println("Camera angle is " + angle);
 	}
 	
 	public void turnRight(float deg) {
@@ -90,8 +102,12 @@ public class Camera {
 	public void move(float d, Terrain terrain) { // input d is positive for moving forward and negative for moving backward
 		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
-		System.out.println("position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
+		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
+	public void toggleView() {
+		// Add something here to change camera position?
+		firstPerson = !firstPerson;
+	}
 
 }

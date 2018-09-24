@@ -28,8 +28,6 @@ public class World extends Application3D implements KeyListener {
 
     private Terrain terrain;
     private Camera myCamera;
-    private Texture texture;
-
 
     public World(Terrain terrain) {
     	super("Assignment 2", 800, 600);
@@ -54,8 +52,6 @@ public class World extends Application3D implements KeyListener {
 	@Override
 	public void display(GL3 gl) {
 		super.display(gl);
-		
-		// texture
 
 		// need to put camera onto terrain so when rotating, need to keep track of direction so you don't move away from terrain's coordinate frame
         Shader.setPenColor(gl, Color.WHITE);

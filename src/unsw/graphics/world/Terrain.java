@@ -158,9 +158,6 @@ public class Terrain {
     public float altitude(float x, float z) {
         float altitude = 0;
         
-        System.out.println("Received these x, z in altitude " + x + " " + z);
-        // TODO: Implement this
-        
         /**
          * 
          * (x0,0,z0)  (x1,0.5,z0)
@@ -182,13 +179,11 @@ public class Terrain {
         float z_remain = z % 1;
         int x0 = (int) x;
         int z0 = (int) z;
-        System.out.println("x0, z0," + x0 + " " + z0);
         int x1 = x0<width-1?x0+1:x0;
         int z1 = z0<depth-1?z0+1:z0;
         float a0 = ((1-x_remain)*altitudes[x0][z0]) + (x_remain*altitudes[x1][z0]);
         float a1 = ((1-x_remain)*altitudes[x0][z1]) + (x_remain*altitudes[x1][z1]);
         altitude = ((1-z_remain)*a0)+(z_remain*a1);
-        System.out.println("Altitude is " + altitude);
         return altitude;
     }
     
@@ -347,6 +342,10 @@ public class Terrain {
 //        Shader.setInt(gl, "tex", 0);
 //        gl.glActiveTexture(GL.GL_TEXTURE0);
 //        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+        
+        for (Tree t: trees) {
+        	t.init(gl);
+        }
         
     }
     
