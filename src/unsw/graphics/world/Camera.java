@@ -27,7 +27,7 @@ public class Camera {
 	
 	public Camera(float x, float y, float z) {
 		pos = new Point3D(x, y, z);
-		orientation = new Vector3(1, 0, 0); // set initial direction to face z axis
+		orientation = new Vector3(0, 0, 1); // set initial direction to face z axis
 		angle = 0;
 		firstPerson = true;
 		avatar = new Avatar(pos);
@@ -35,7 +35,7 @@ public class Camera {
 	
 	public Camera(Point3D position) {
 		pos = position;
-		orientation = new Vector3(1, 0, 0);
+		orientation = new Vector3(0, 0, 1);
 		angle = 0;
 		firstPerson = true;
 		avatar = new Avatar(pos);
@@ -43,7 +43,7 @@ public class Camera {
 	
 	public Camera(float x, float z, Terrain terrain) {
 		pos = new Point3D(x, terrain.altitude(x, z), z);
-		orientation = new Vector3(1, 0, 0);
+		orientation = new Vector3(0, 0, 1);
 		this.terrain = terrain;
 		angle = 0;
 		firstPerson = true;
@@ -112,6 +112,7 @@ public class Camera {
 		float avatarX = pos.getX()-orientation.getX()*thirdPersonDistance;
 		float avatarZ = pos.getZ()-orientation.getZ()*thirdPersonDistance;
 		Point3D avatarPos = new Point3D(avatarX, terrain.altitude(avatarX, avatarZ), avatarZ);
+		System.out.println("Avatar position is at " + avatarPos.getX() + " " + avatarPos.getY() + " " + avatarPos.getZ());
 		avatar.setPosition(avatarPos);
 		if (!firstPerson) {
 			// update camera height based on avatar pos instead
@@ -138,7 +139,7 @@ public class Camera {
 			pos = new Point3D(pos.getX()+orientation.getX()*thirdPersonDistance, 
 					pos.getY()+orientation.getY()*thirdPersonDistance, 
 					pos.getZ()+orientation.getZ()*thirdPersonDistance);	
-			updateThridPersonView();
+			updateThridPersonView(); 
 		}
 		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		firstPerson = !firstPerson;
