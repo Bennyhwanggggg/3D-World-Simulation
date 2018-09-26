@@ -9,6 +9,7 @@ import com.jogamp.opengl.GL3;
 import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Shader;
 import unsw.graphics.Texture;
+import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point3D;
 import unsw.graphics.geometry.TriangleMesh;
 
@@ -17,6 +18,8 @@ public class Avatar {
 	private Point3D position;
     private TriangleMesh model;
     private Texture texture;
+    private Vector3 orientation;
+    private float angle;
 
 	public Avatar(Point3D position) {
 		this.position = position;
@@ -52,8 +55,30 @@ public class Avatar {
 									this.position.getZ() - speed*z);
 	}
 	
+	public void move(Vector3 direction, float speed) {
+		this.position = new Point3D(this.position.getX()+direction.getX()*speed,
+									this.position.getY()+direction.getY()*speed,
+									this.position.getZ()+direction.getZ()*speed);
+	}
+	
+	public void setOrientation(Vector3 newOrientation) {
+		this.orientation = newOrientation;
+		// convert back to angle for rotation
+		double dx = this.orientation.getX();
+		double dz = this.orientation.getZ();
+		this.angle = (float) Math.toDegrees(Math.atan2(dx, dz));
+	}
+	
+	public void setPosition(Point3D newPos) {
+		this.position = newPos;
+	}
+	
+	public void setAltitude(float y) {
+		this.position = new Point3D(this.position.getX(), y, this.position.getZ());
+	}
+	
 	public void init(GL3 gl) {
-		texture = new Texture(gl, "res/textures/canTop.bmp", "bmp", false);
+		texture = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
 		model.init(gl);
 	}
 	
@@ -64,7 +89,6 @@ public class Avatar {
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
         
-        Shader.setModelMatrix(gl, frame.getMatrix());
         
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
@@ -72,7 +96,13 @@ public class Avatar {
         Shader.setColor(gl, "specularCoeff", new Color(0.0f, 0.0f, 0.0f));
         Shader.setFloat(gl, "phongExp", 16f);
     	
-        model.draw(gl, frame);
+        CoordFrame3D scaledFrame = frame.translate(position).
+        							translate(0f, 0.2f, 0f).
+        							rotateY(this.angle).
+        							rotateY(180f). // this one is because head is the other way
+        							scale(0.1f, 0.1f, 0.1f);
+        Shader.setModelMatrix(gl, scaledFrame.getMatrix());
+        model.draw(gl, scaledFrame);
 
     }
     

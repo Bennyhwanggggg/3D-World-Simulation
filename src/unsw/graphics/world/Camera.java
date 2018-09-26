@@ -15,12 +15,15 @@ import unsw.graphics.geometry.Point3D;
 
 public class Camera {
 	
+	private Terrain terrain;
+	
 	private Point3D pos;
 	private float angle; // degrees
 	private Vector3 orientation;
 	
 	private boolean firstPerson;
 	private Avatar avatar;
+	private float thirdPersonDistance = 2.0f;
 	
 	public Camera(float x, float y, float z) {
 		pos = new Point3D(x, y, z);
@@ -41,9 +44,14 @@ public class Camera {
 	public Camera(float x, float z, Terrain terrain) {
 		pos = new Point3D(x, terrain.altitude(x, z), z);
 		orientation = new Vector3(1, 0, 0);
+		this.terrain = terrain;
 		angle = 0;
 		firstPerson = true;
 		avatar = new Avatar(pos);
+	}
+	
+	public void init(GL3 gl) {
+		avatar.init(gl);
 	}
 	
 	public Point3D getPosition() {
@@ -73,6 +81,7 @@ public class Camera {
 		} else {
 			orientation = new Vector3(dx, 0, dz).normalize();
 		}
+		avatar.setOrientation(orientation);
 		System.out.println("Camera orientation is " + orientation.getX() + " " + orientation.getZ());
 		System.out.println("Camera angle is " + angle);
 	}
@@ -85,6 +94,7 @@ public class Camera {
 		}
 		angle %= 360;
 		changeOrientation();
+		updateThridPersonView();
 	}
 	
 	public void turnLeft(float deg) {
@@ -95,19 +105,54 @@ public class Camera {
 		}
 		angle %= 360;
 		changeOrientation();
-		
+		updateThridPersonView();
 	}
 	
+	private void updateThridPersonView() {
+		float avatarX = pos.getX()-orientation.getX()*thirdPersonDistance;
+		float avatarZ = pos.getZ()-orientation.getZ()*thirdPersonDistance;
+		Point3D avatarPos = new Point3D(avatarX, terrain.altitude(avatarX, avatarZ), avatarZ);
+		avatar.setPosition(avatarPos);
+		if (!firstPerson) {
+			// update camera height based on avatar pos instead
+			pos = new Point3D(pos.getX(), terrain.altitude(avatarPos.getX(), avatarPos.getZ()), pos.getZ());
+		}
+	}
 
-	public void move(float d, Terrain terrain) { // input d is positive for moving forward and negative for moving backward
+	public void move(float d) { // input d is positive for moving forward and negative for moving backward
 		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
+		updateThridPersonView();
 		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
 	public void toggleView() {
 		// Add something here to change camera position?
+		if (!firstPerson) {
+			System.out.println("Switched to first person");
+			pos = new Point3D(pos.getX()-orientation.getX()*thirdPersonDistance, 
+					pos.getY()-orientation.getY()*thirdPersonDistance, 
+					pos.getZ()-orientation.getZ()*thirdPersonDistance);
+		} else {
+			System.out.println("Switched to third person");
+			pos = new Point3D(pos.getX()+orientation.getX()*thirdPersonDistance, 
+					pos.getY()+orientation.getY()*thirdPersonDistance, 
+					pos.getZ()+orientation.getZ()*thirdPersonDistance);	
+			updateThridPersonView();
+		}
+		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		firstPerson = !firstPerson;
 	}
 
+	public void drawAvatar(GL3 gl) {
+		if (!firstPerson) {
+			avatar.draw(gl);
+		}
+	}
+	
+	public void drawAvatar(GL3 gl, CoordFrame3D frame) {
+		if (!firstPerson) {
+			avatar.draw(gl, frame);
+		}
+	}
 }

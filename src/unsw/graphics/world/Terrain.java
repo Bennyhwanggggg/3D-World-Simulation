@@ -230,9 +230,8 @@ public class Terrain {
         // ==========================================================
         List<Point3D> p_list = new ArrayList<Point3D>();
 
-        for(dz=0; dz<width; dz++){
+        for(dz=0; dz<depth; dz++){
         	for(dx=0; dx<width; dx++){
-//        		p_list.add(new Point3D(dx, altitudes[dz][dx], dz));
         		p_list.add(new Point3D(dx, altitudes[dx][dz], dz));
         	}
         }
@@ -242,7 +241,7 @@ public class Terrain {
         // texture
         // ==========================================================
         List<Point2D> t_list = new ArrayList<Point2D>();
-        for(dz=0; dz<width; dz++){
+        for(dz=0; dz<depth; dz++){
         	for(dx=0; dx<width; dx++){
         		t_list.add(new Point2D((float)dz/(depth-1), (float)dx/(width-1)));
         	}
@@ -257,7 +256,7 @@ public class Terrain {
         index_vert=0;
         cnt = 0;
         
-        for(dz=0; dz<width-1; dz++){
+        for(dz=0; dz<depth-1; dz++){
         	for(dx=0; dx<width-1; dx++){
         		index_vert = dz*width+dx;
         		i_list[cnt++] = (index_vert);

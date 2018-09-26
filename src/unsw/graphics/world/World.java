@@ -61,6 +61,9 @@ public class World extends Application3D implements KeyListener {
 
         Shader.setViewMatrix(gl, frame.getMatrix());
 		terrain.draw(gl);
+		if (!myCamera.isFirstPersonMode()) {
+			myCamera.drawAvatar(gl);
+		}
 	}
 
 	@Override
@@ -75,6 +78,7 @@ public class World extends Application3D implements KeyListener {
 		getWindow().addKeyListener(this);
 //		myCamera = new Camera(0f, 4f, 0f);
 		myCamera = new Camera(0f, 0f, terrain);
+		myCamera.init(gl);
 		terrain.init(gl);
 	}
 
@@ -89,10 +93,10 @@ public class World extends Application3D implements KeyListener {
 		switch (e.getKeyCode()) {
         
         case KeyEvent.VK_UP:
-        	myCamera.move(-0.2f, terrain); // integer is the speed
+        	myCamera.move(-0.2f); // integer is the speed
             break;
         case KeyEvent.VK_DOWN:
-        	myCamera.move(0.2f, terrain);
+        	myCamera.move(0.2f);
             break;
         case KeyEvent.VK_RIGHT:
             myCamera.turnRight(10f);
@@ -100,6 +104,8 @@ public class World extends Application3D implements KeyListener {
         case KeyEvent.VK_LEFT:
             myCamera.turnLeft(10f);
             break;
+        case KeyEvent.VK_SPACE:
+        	myCamera.toggleView();
         default:
             break;
         }
