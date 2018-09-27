@@ -78,7 +78,7 @@ public class Avatar {
 	}
 	
 	public void init(GL3 gl) {
-		texture = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
+		texture = new Texture(gl, "res/textures/dog_fur.png", "png", false);
 		model.init(gl);
 	}
 	
@@ -92,9 +92,9 @@ public class Avatar {
         
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
-        Shader.setColor(gl, "diffuseCoeff", new Color(0.9f, 0.9f, 0.9f));
-        Shader.setColor(gl, "specularCoeff", new Color(0.0f, 0.0f, 0.0f));
-        Shader.setFloat(gl, "phongExp", 16f);
+        Shader.setColor(gl, "diffuseCoeff", new Color(0.6f, 0.6f, 0.6f));
+        Shader.setColor(gl, "specularCoeff", new Color(0.3f, 0.3f, 0.3f));
+        Shader.setFloat(gl, "phongExp", 2f);
     	
         CoordFrame3D scaledFrame = frame.translate(position).
         							translate(0f, 0.2f, 0f).
