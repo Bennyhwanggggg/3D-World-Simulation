@@ -346,11 +346,20 @@ public class Terrain {
         	t.init(gl);
         }
         
+        for (Road road: roads) {
+    		road.init(gl);
+    	}
+        
     }
     
     public void drawTrees(GL3 gl, CoordFrame3D frame) {
     	for (Tree t: trees) {
     		t.draw(gl, frame);
+    	}
+    }
+    public void drawRoads(GL3 gl, CoordFrame3D frame) {
+    	for (Road road: roads) {
+    		road.draw(gl, frame, this);
     	}
     }
     
@@ -399,6 +408,7 @@ public class Terrain {
 //        }
         
         drawTrees(gl, frame);
+        drawRoads(gl, frame);
     }
     
     public void draw(GL3 gl) {
