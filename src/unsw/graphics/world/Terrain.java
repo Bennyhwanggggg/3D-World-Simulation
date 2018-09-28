@@ -363,6 +363,22 @@ public class Terrain {
     	}
     }
     
+    public float get_sun_height(float x) {
+    	// r = 1, y = sqrt( r^2 - x^2)
+    	float y = (float) Math.sqrt(1- Math.pow(Math.abs(x), 2));
+    	return y;
+    }
+    
+    public void update_sun_height(float moving_rate) {
+    	// assume Z remain the same
+    	float new_sun_x = sunlight.getX() + moving_rate;
+        sunlight.setX(new_sun_x);
+        sunlight.setY(get_sun_height(new_sun_x));
+        if(sunlight.getX() > 1) {
+        	sunlight.setX(-1);
+        }
+    	
+    }
     
     public void draw(GL3 gl, CoordFrame3D frame) {
     	
@@ -376,6 +392,10 @@ public class Terrain {
         Shader.setModelMatrix(gl, frame.getMatrix());
         
         // Set light properties
+        
+        // moving sun
+        update_sun_height(0.01f);
+        
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
         Shader.setColor(gl, "lightIntensity", Color.WHITE);
         Shader.setColor(gl, "ambientIntensity", new Color(0.5f, 0.5f, 0.5f));

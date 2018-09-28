@@ -95,7 +95,20 @@ public class Vector3 {
     public float getZ() {
         return values[2];
     }
-
+    
+    public void setX(float v) {
+        values[0] = v;
+    }
+    
+    public void setY(float v) {
+        values[1] = v;
+    }
+    
+    public void setZ(float v) {
+        values[2] = v;
+    }
+    
+    
     public Vector3 normalize() {
         return scale(1/length());
     }

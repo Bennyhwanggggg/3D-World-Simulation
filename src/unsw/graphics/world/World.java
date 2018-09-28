@@ -106,6 +106,9 @@ public class World extends Application3D implements KeyListener {
             break;
         case KeyEvent.VK_SPACE:
         	myCamera.toggleView();
+        
+        case KeyEvent.VK_S:
+        	System.out.println("sun moving");
         default:
             break;
         }

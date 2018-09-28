@@ -198,8 +198,8 @@ public class Road {
         	Point3D point4 = new Point3D(normalPoint.getX(), 
 						terrain.altitude(normalPoint.getX(), normalPoint.getY()),
 						normalPoint.getY());
-        	System.out.println("Point1 is spinepoint: " + point1.getX() + " " + point1.getY() + " " + point1.getZ());
-        	System.out.println("Point2 is normal point: " + point2.getX() + " " + point2.getY() + " " + point2.getZ());
+        	//System.out.println("Point1 is spinepoint: " + point1.getX() + " " + point1.getY() + " " + point1.getZ());
+        	//System.out.println("Point2 is normal point: " + point2.getX() + " " + point2.getY() + " " + point2.getZ());
 //        	vertices.add(point1);
 //        	vertices.add(point2);
 //        	vertices.add(point3);
