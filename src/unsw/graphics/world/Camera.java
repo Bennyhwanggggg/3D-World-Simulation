@@ -53,7 +53,7 @@ public class Camera {
 	public void init(GL3 gl) {
 		avatar.init(gl);
 	}
-	
+	 
 	public Point3D getPosition() {
 		return pos;
 	}

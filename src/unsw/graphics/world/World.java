@@ -77,7 +77,7 @@ public class World extends Application3D implements KeyListener {
 		super.init(gl);
 		getWindow().addKeyListener(this);
 //		myCamera = new Camera(0f, 4f, 0f);
-		myCamera = new Camera(0f, 0f, terrain);
+		myCamera = new Camera(4f, -9f, terrain);
 		myCamera.init(gl);
 		terrain.init(gl);
 	}
@@ -104,11 +104,12 @@ public class World extends Application3D implements KeyListener {
         case KeyEvent.VK_LEFT:
             myCamera.turnLeft(10f);
             break;
-        case KeyEvent.VK_SPACE:
+        case KeyEvent.VK_TAB:
         	myCamera.toggleView();
-        
+        	break;
         case KeyEvent.VK_S:
-        	System.out.println("sun moving");
+        	terrain.moving_sun_switch();
+        	break;
         default:
             break;
         }

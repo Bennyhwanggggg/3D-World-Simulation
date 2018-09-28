@@ -37,6 +37,7 @@ import unsw.graphics.geometry.TriangleMesh;
 public class Terrain {
 
     private int width;
+    private boolean moving_sun;
     private int depth;
     private float[][] altitudes;
     private List<Tree> trees;
@@ -93,10 +94,15 @@ public class Terrain {
     public Terrain(int width, int depth, Vector3 sunlight) {
         this.width = width;
         this.depth = depth;
+        this.moving_sun = false;
         altitudes = new float[width][depth];
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
         this.sunlight = sunlight;
+    }
+    
+    public void moving_sun_switch() {
+    	this.moving_sun = ! this.moving_sun;
     }
 
     public List<Tree> trees() {
@@ -106,7 +112,7 @@ public class Terrain {
     public List<Road> roads() {
         return roads;
     }
-
+    
     public Vector3 getSunlight() {
         return sunlight;
     }
@@ -394,10 +400,14 @@ public class Terrain {
         // Set light properties
         
         // moving sun
-        update_sun_height(0.01f);
+        if(this.moving_sun) {
+        	float moving_rate = 0.02f;
+        	update_sun_height(moving_rate);
+        }
+        
         
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
-        Shader.setColor(gl, "lightIntensity", Color.WHITE);
+        Shader.setColor(gl, "lightIntensity", new Color(1.0f, sunlight.getY(), sunlight.getY()));	// changing light color as sun goes down
         Shader.setColor(gl, "ambientIntensity", new Color(0.5f, 0.5f, 0.5f));
         
         // Set the material properties
