@@ -110,6 +110,9 @@ public class World extends Application3D implements KeyListener {
         case KeyEvent.VK_S:
         	terrain.moving_sun_switch();
         	break;
+        case KeyEvent.VK_N:
+        	terrain.night_mode_switch();
+        	break;
         default:
             break;
         }

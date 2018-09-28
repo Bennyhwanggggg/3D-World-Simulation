@@ -38,6 +38,8 @@ public class Terrain {
 
     private int width;
     private boolean moving_sun;
+    private boolean night_mode;
+    private Color sun_light_color;
     private int depth;
     private float[][] altitudes;
     private List<Tree> trees;
@@ -47,6 +49,7 @@ public class Terrain {
     private IntBuffer indicesBuffer;
     private Texture texture;
     private TriangleMesh mesh;
+    private float sun_moving_rate;
     
 
     /**
@@ -94,7 +97,10 @@ public class Terrain {
     public Terrain(int width, int depth, Vector3 sunlight) {
         this.width = width;
         this.depth = depth;
+        this.night_mode = false;
         this.moving_sun = false;
+        this.sun_moving_rate = 0.02f;
+        this.sun_light_color = new Color(1f,1f,1f);
         altitudes = new float[width][depth];
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
@@ -386,6 +392,26 @@ public class Terrain {
     	
     }
     
+    public void night_mode_switch() {
+    	this.night_mode = !this.night_mode;
+    	if(this.night_mode) {
+    		night_mode_on();
+    	}else {
+    		night_mode_off();
+    	}
+    }
+    
+    public void night_mode_on() {
+    	this.moving_sun = false;	// stop moving sun
+    	sun_light_color = new Color(0, 0, 0);
+    	
+    }
+    
+    public void night_mode_off() {
+    	sun_light_color = new Color(1f, 1f, 1f);
+    	
+    }
+    
     public void draw(GL3 gl, CoordFrame3D frame) {
     	
     	// Bind Texture
@@ -399,15 +425,17 @@ public class Terrain {
         
         // Set light properties
         
+        
         // moving sun
         if(this.moving_sun) {
-        	float moving_rate = 0.02f;
-        	update_sun_height(moving_rate);
+        	this.night_mode = false;		//disable night mode for moving sun
+        	update_sun_height(sun_moving_rate);
+        	sun_light_color = new Color(1.0f, sunlight.getY(), sunlight.getY());
+
         }
-        
-        
+
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
-        Shader.setColor(gl, "lightIntensity", new Color(1.0f, sunlight.getY(), sunlight.getY()));	// changing light color as sun goes down
+        Shader.setColor(gl, "lightIntensity", sun_light_color);	// changing light color as sun goes down
         Shader.setColor(gl, "ambientIntensity", new Color(0.5f, 0.5f, 0.5f));
         
         // Set the material properties
