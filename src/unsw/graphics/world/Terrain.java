@@ -52,6 +52,10 @@ public class Terrain {
     private float sun_moving_rate;
     private Shader shader;
     
+    // testing animated textures
+//    private List<Texture> textures;
+//    private int time = 0;
+//    
 
     /**
      * Contains the normals for all vertices.
@@ -288,6 +292,10 @@ public class Terrain {
         // texture
         // ========================================
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
+        Texture texture2 = new Texture(gl, "res/textures/grass2.png", "png", true);
+        textures = Arrays.asList(texture, texture2);
+        
+        
 //        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
         shader = new Shader(gl, "shaders/vertex_spotlight_phong.glsl", "shaders/fragment_spotlight_phong.glsl");
         shader.use(gl);
@@ -360,7 +368,8 @@ public class Terrain {
     	Shader.setInt(gl, "tex", 0);
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
-        
+//        gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get(time%2).getId());
+//        time += 1;
         Shader.setPenColor(gl, Color.WHITE);
         
         Shader.setModelMatrix(gl, frame.getMatrix());
