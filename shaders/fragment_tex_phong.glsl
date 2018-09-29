@@ -10,6 +10,10 @@ uniform vec3 lightPos;
 uniform vec3 lightIntensity;
 uniform vec3 ambientIntensity;
 
+out float attenuation;
+uniform float coneAngle;
+uniform vec3 coneDirection;
+
 // Material properties
 uniform vec3 ambientCoeff;
 uniform vec3 diffuseCoeff;
@@ -39,7 +43,7 @@ void main()
         specular = max(lightIntensity*specularCoeff*pow(dot(r,v),phongExp), 0.0);
     else
         specular = vec3(0);
-
+        
     vec4 ambientAndDiffuse = vec4(ambient + diffuse, 1);
 
     outputColor = ambientAndDiffuse*input_color*texture(tex, texCoordFrag) + vec4(specular, 1);

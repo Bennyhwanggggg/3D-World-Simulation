@@ -50,6 +50,7 @@ public class Terrain {
     private Texture texture;
     private TriangleMesh mesh;
     private float sun_moving_rate;
+    private Shader shader;
     
 
     /**
@@ -182,8 +183,7 @@ public class Terrain {
          */
         
         
-//        if(x<0 || x>=width ||z<0 || z>=depth) {
-        if(x<0 || x>=width ||z<0 || z>=width) {
+        if(x<0 || x>=width ||z<0 || z>=depth) {
         	return altitude;
         }
         
@@ -288,8 +288,8 @@ public class Terrain {
         // texture
         // ========================================
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
-        Shader shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
-		
+//        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
+        shader = new Shader(gl, "shaders/vertex_spotlight_phong.glsl", "shaders/fragment_spotlight_phong.glsl");
         shader.use(gl);
                 
         for (Tree t: trees) {
@@ -330,6 +330,10 @@ public class Terrain {
     	
     }
     
+    public boolean isNightMode() {
+    	return this.night_mode;
+    }
+    
     public void night_mode_switch() {
     	this.night_mode = !this.night_mode;
     	if(this.night_mode) {
@@ -368,7 +372,6 @@ public class Terrain {
         	this.night_mode = false;		//disable night mode for moving sun
         	update_sun_height(sun_moving_rate);
         	sun_light_color = new Color(1.0f, sunlight.getY(), sunlight.getY());
-
         }
 
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
@@ -384,11 +387,11 @@ public class Terrain {
         mesh.draw(gl, frame);
         drawTrees(gl, frame);
         drawRoads(gl, frame);
+
     }
     
     public void draw(GL3 gl) {
         draw(gl, CoordFrame3D.identity());
     }
-    
     
 }

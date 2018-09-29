@@ -15,6 +15,7 @@ import unsw.graphics.CoordFrame3D;
 import unsw.graphics.Matrix4;
 import unsw.graphics.Shader;
 import unsw.graphics.Texture;
+import unsw.graphics.Vector3;
 import unsw.graphics.geometry.Point3D;
 
 
@@ -64,6 +65,14 @@ public class World extends Application3D implements KeyListener {
 		if (!myCamera.isFirstPersonMode()) {
 			myCamera.drawAvatar(gl);
 		}
+//		if (myCamera.isTorchOn()) {
+			myCamera.showTorchLight(gl, Color.BLUE, 0.3f, 5.8f);
+//		}
+		if (terrain.isNightMode()) {
+			setBackground(new Color(33/255f, 33/255f, 33/255f));
+		} else {
+			setBackground(Color.WHITE);
+		}
 	}
 
 	@Override
@@ -76,7 +85,6 @@ public class World extends Application3D implements KeyListener {
 	public void init(GL3 gl) {
 		super.init(gl);
 		getWindow().addKeyListener(this);
-//		myCamera = new Camera(0f, 4f, 0f);
 		myCamera = new Camera(4f, -9f, terrain);
 		myCamera.init(gl);
 		terrain.init(gl);
@@ -112,6 +120,9 @@ public class World extends Application3D implements KeyListener {
         	break;
         case KeyEvent.VK_N:
         	terrain.night_mode_switch();
+        	break;
+        case KeyEvent.VK_SPACE:
+        	myCamera.switchTorch();
         	break;
         default:
             break;

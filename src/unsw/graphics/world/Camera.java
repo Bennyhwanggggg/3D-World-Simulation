@@ -1,5 +1,7 @@
 package unsw.graphics.world;
 
+import java.awt.Color;
+
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.opengl.GL3;
@@ -24,6 +26,8 @@ public class Camera {
 	private boolean firstPerson;
 	private Avatar avatar;
 	private float thirdPersonDistance = 2.0f;
+	
+	private boolean torchSwitch = false;
 	
 	public Camera(float x, float y, float z) {
 		pos = new Point3D(x, y, z);
@@ -66,6 +70,30 @@ public class Camera {
 		return this.firstPerson;
 	}
 	
+	public boolean isTorchOn() {
+		return this.torchSwitch;
+	}
+	
+	public void switchTorch() {
+		torchSwitch = !torchSwitch;
+	}
+	
+	public void showTorchLight(GL3 gl, Color lightIntensity, float attenuation, float coneAngle) {
+		Shader.setPoint3D(gl, "lightPosSpot", new Point3D(pos.getX(), pos.getY()+1f, pos.getZ()));	
+		Shader.setColor(gl, "lightIntensitySpot", lightIntensity);
+		Shader.setPoint3D(gl, "coneDirection", new Point3D(orientation.getX(), orientation.getY(), orientation.getZ()));
+		Shader.setFloat(gl, "attenuation", 10f);
+        Shader.setFloat(gl, "coneAngle", coneAngle);				
+	}
+	
+//	public void turnOffTorchLight(GL3 gl) {
+//		if (torchLightShader != null) {
+//			torchLightShader.destroy(gl);
+//			torchLightShader = null;
+//			System.out.println("Torchlight off");
+//		}
+//	}
+	
 	private void changeOrientation() {
 		float dx, dz;
 		if (angle <= 90 || angle >= 270) {
@@ -82,8 +110,8 @@ public class Camera {
 			orientation = new Vector3(dx, 0, dz).normalize();
 		}
 		avatar.setOrientation(orientation);
-		System.out.println("Camera orientation is " + orientation.getX() + " " + orientation.getZ());
-		System.out.println("Camera angle is " + angle);
+//		System.out.println("Camera orientation is " + orientation.getX() + " " + orientation.getZ());
+//		System.out.println("Camera angle is " + angle);
 	}
 	
 	public void turnRight(float deg) {
@@ -112,7 +140,7 @@ public class Camera {
 		float avatarX = pos.getX()-orientation.getX()*thirdPersonDistance;
 		float avatarZ = pos.getZ()-orientation.getZ()*thirdPersonDistance;
 		Point3D avatarPos = new Point3D(avatarX, terrain.altitude(avatarX, avatarZ), avatarZ);
-		System.out.println("Avatar position is at " + avatarPos.getX() + " " + avatarPos.getY() + " " + avatarPos.getZ());
+//		System.out.println("Avatar position is at " + avatarPos.getX() + " " + avatarPos.getY() + " " + avatarPos.getZ());
 		avatar.setPosition(avatarPos);
 		if (!firstPerson) {
 			// update camera height based on avatar pos instead
@@ -124,7 +152,7 @@ public class Camera {
 		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
 		updateThridPersonView();
-		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
+//		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
 	public void toggleView() {
@@ -141,7 +169,7 @@ public class Camera {
 					pos.getZ()+orientation.getZ()*thirdPersonDistance);	
 			updateThridPersonView(); 
 		}
-		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
+//		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		firstPerson = !firstPerson;
 	}
 
