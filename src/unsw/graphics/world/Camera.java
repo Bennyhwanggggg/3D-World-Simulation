@@ -83,7 +83,7 @@ public class Camera {
 		Shader.setColor(gl, "lightIntensitySpot", lightIntensity);
 		Shader.setPoint3D(gl, "coneDirection", new Point3D(orientation.getX(), orientation.getY(), orientation.getZ()));
 //		Shader.setPoint3D(gl, "coneDirection", new Point3D((float)Math.cos(Math.toRadians(angle)), 0.0f, (float)Math.sin(Math.toRadians(angle))));
-		Shader.setFloat(gl, "attenuation", 10f);
+		Shader.setFloat(gl, "attenuation", attenuation);
         Shader.setFloat(gl, "coneAngle", coneAngle);				
 	}
 	
