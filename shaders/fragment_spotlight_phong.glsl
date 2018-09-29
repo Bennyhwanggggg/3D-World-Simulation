@@ -51,9 +51,10 @@ void main()
     vec3 sSpot = normalize(view_matrix*vec4(lightPosSpot,1) - viewPosition).xyz;
     vec3 vSpot = normalize(-viewPosition.xyz);
     vec3 rSpot = normalize(reflect(-sSpot,m));
-    
-    float distanceToLight = length(view_matrix*vec4(lightPosSpot,1) - viewPosition);
-    float a = 1.0 / (1.0 + attenuation * pow(distanceToLight, 2));
+  	
+  	// distance attenuation extension, not working  
+//    float distanceToLight = length(view_matrix*vec4(lightPosSpot,1) - viewPosition);
+//    float a = 1.0 / (1.0 + attenuation * pow(distanceToLight, 2));
 
     vec3 ambientSpot = ambientIntensity*ambientCoeff; // let ambient intensity to be the same
     vec3 diffuseSpot = max(lightIntensitySpot*diffuseCoeff*dot(m,sSpot), 0.0);
@@ -65,13 +66,13 @@ void main()
     else
         specularSpot = vec3(0);
        
-    
+    float a = attenuation;
     //cone restrictions (affects attenuation)
    	float lightToSurfaceAngle = degrees(acos(dot(sSpot, normalize(coneDirection))));
    	if(lightToSurfaceAngle > coneAngle){
         a = 0.0;
     } else {
-    	a = 1.0; // temp fix, an issue with the a calculation above to fix later
+    	a = pow(cos(radians(lightToSurfaceAngle)), a);
     }
     
     vec4 ambientAndDiffuse = vec4(ambient + diffuse, 1);

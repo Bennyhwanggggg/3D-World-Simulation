@@ -79,21 +79,12 @@ public class Camera {
 	}
 	
 	public void showTorchLight(GL3 gl, Color lightIntensity, float attenuation, float coneAngle) {
-		Shader.setPoint3D(gl, "lightPosSpot", new Point3D(pos.getX(), pos.getY()+1f, pos.getZ()));	
+		Shader.setPoint3D(gl, "lightPosSpot", new Point3D(pos.getX(), pos.getY()+0.7f, pos.getZ()));	// + 0.7f so for little offset
 		Shader.setColor(gl, "lightIntensitySpot", lightIntensity);
-		Shader.setPoint3D(gl, "coneDirection", new Point3D(orientation.getX(), orientation.getY(), orientation.getZ()));
-//		Shader.setPoint3D(gl, "coneDirection", new Point3D((float)Math.cos(Math.toRadians(angle)), 0.0f, (float)Math.sin(Math.toRadians(angle))));
+		Shader.setPoint3D(gl, "coneDirection", new Point3D(0f, 0f, 1f));
 		Shader.setFloat(gl, "attenuation", attenuation);
         Shader.setFloat(gl, "coneAngle", coneAngle);				
 	}
-	
-//	public void turnOffTorchLight(GL3 gl) {
-//		if (torchLightShader != null) {
-//			torchLightShader.destroy(gl);
-//			torchLightShader = null;
-//			System.out.println("Torchlight off");
-//		}
-//	}
 	
 	private void changeOrientation() {
 		float dx, dz;
@@ -157,7 +148,6 @@ public class Camera {
 	}
 	
 	public void toggleView() {
-		// Add something here to change camera position?
 		if (!firstPerson) {
 			System.out.println("Switched to first person");
 			pos = new Point3D(pos.getX()-orientation.getX()*thirdPersonDistance, 
