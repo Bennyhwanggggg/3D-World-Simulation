@@ -67,11 +67,11 @@ void main()
        
     
     //cone restrictions (affects attenuation)
-   	float lightToSurfaceAngle = degrees(acos(dot(-sSpot, normalize(coneDirection))));
+   	float lightToSurfaceAngle = degrees(acos(dot(sSpot, normalize(coneDirection))));
    	if(lightToSurfaceAngle > coneAngle){
         a = 0.0;
     } else {
-    	a = 1.0;
+    	a = 1.0; // temp fix, an issue with the a calculation above to fix later
     }
     
     vec4 ambientAndDiffuse = vec4(ambient + diffuse, 1);
