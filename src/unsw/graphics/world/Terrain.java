@@ -293,7 +293,7 @@ public class Terrain {
         // ========================================
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
         Texture texture2 = new Texture(gl, "res/textures/grass2.png", "png", true);
-        textures = Arrays.asList(texture, texture2);
+//        textures = Arrays.asList(texture, texture2);
         
         
 //        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
