@@ -292,7 +292,7 @@ public class Terrain {
         // texture
         // ========================================
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
-        Texture texture2 = new Texture(gl, "res/textures/grass2.png", "png", true);
+//        Texture texture2 = new Texture(gl, "res/textures/grass2.png", "png", true);
 //        textures = Arrays.asList(texture, texture2);
         
         
@@ -391,7 +391,7 @@ public class Terrain {
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
         Shader.setColor(gl, "diffuseCoeff", new Color(0.9f, 0.9f, 0.9f));
         Shader.setColor(gl, "specularCoeff", new Color(0.0f, 0.0f, 0.0f));
-        Shader.setFloat(gl, "phongExp", 16f);
+        Shader.setFloat(gl, "phongExp", 50f);
     	
         mesh.draw(gl, frame);
         drawTrees(gl, frame);
