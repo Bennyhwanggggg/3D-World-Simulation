@@ -52,6 +52,8 @@ public class Terrain {
     private float sun_moving_rate;
     private Shader shader;
     
+    private List<Pond> ponds;
+    
     // testing animated textures
 //    private List<Texture> textures;
 //    private int time = 0;
@@ -109,6 +111,7 @@ public class Terrain {
         altitudes = new float[width][depth];
         trees = new ArrayList<Tree>();
         roads = new ArrayList<Road>();
+        ponds = new ArrayList<Pond>();
         this.sunlight = sunlight;
     }
     
@@ -229,6 +232,10 @@ public class Terrain {
         roads.add(road);        
     }
     
+    public void addPonds(float x, float z, float w) {
+    	Pond pond = new Pond(x, z, w, this);
+    	ponds.add(pond);
+    }
   
     public int getWidth() {
     	return width;
@@ -292,9 +299,6 @@ public class Terrain {
         // texture
         // ========================================
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
-//        Texture texture2 = new Texture(gl, "res/textures/grass2.png", "png", true);
-//        textures = Arrays.asList(texture, texture2);
-        
         
 //        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
         shader = new Shader(gl, "shaders/vertex_spotlight_phong.glsl", "shaders/fragment_spotlight_phong.glsl");
@@ -308,6 +312,10 @@ public class Terrain {
     		road.init(gl);
     	}
         
+        for (Pond pond: ponds) {
+        	pond.init(gl);
+        }
+        
     }
     
     public void drawTrees(GL3 gl, CoordFrame3D frame) {
@@ -315,9 +323,16 @@ public class Terrain {
     		t.draw(gl, frame);
     	}
     }
+    
     public void drawRoads(GL3 gl, CoordFrame3D frame) {
     	for (Road road: roads) {
     		road.draw(gl, frame, this);
+    	}
+    }
+    
+    public void drawPonds(GL3 gl, CoordFrame3D frame) {
+    	for (Pond pond: ponds) {
+    		pond.draw(gl, frame);
     	}
     }
     
@@ -368,8 +383,7 @@ public class Terrain {
     	Shader.setInt(gl, "tex", 0);
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
-//        gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get(time%2).getId());
-//        time += 1;
+
         Shader.setPenColor(gl, Color.WHITE);
         
         Shader.setModelMatrix(gl, frame.getMatrix());
@@ -396,6 +410,7 @@ public class Terrain {
         mesh.draw(gl, frame);
         drawTrees(gl, frame);
         drawRoads(gl, frame);
+        drawPonds(gl, frame);
 
     }
     
