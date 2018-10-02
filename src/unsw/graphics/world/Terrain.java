@@ -51,6 +51,7 @@ public class Terrain {
     private TriangleMesh mesh;
     private float sun_moving_rate;
     private Shader shader;
+    private float darkest_value;
     
     private List<Pond> ponds;
     
@@ -107,6 +108,7 @@ public class Terrain {
         this.night_mode = false;
         this.moving_sun = false;
         this.sun_moving_rate = 0.02f;
+        this.darkest_value = 33f;		// minimum value for dark, 33f/255;
         this.sun_light_color = new Color(1f,1f,1f);
         altitudes = new float[width][depth];
         trees = new ArrayList<Tree>();
@@ -129,6 +131,15 @@ public class Terrain {
     
     public Vector3 getSunlight() {
         return sunlight;
+    }
+    
+    public Color getSunlightColor() {
+    	return sun_light_color;
+    }
+    
+    public Color getDarkestColor() {
+    	float dv = this.darkest_value/255f;
+    	return new Color(dv,dv,dv);
     }
 
     /**
@@ -377,6 +388,13 @@ public class Terrain {
     	
     }
     
+    public float sunlight_value_map(float sunheight) {
+    	// sunheight has range (0,1)
+    	// map to darkestvalue
+    	
+    	return ( (255- this.darkest_value)*sunheight + this.darkest_value )/255f;
+    }
+    
     public void draw(GL3 gl, CoordFrame3D frame) {
     	
     	// Bind Texture
@@ -394,7 +412,8 @@ public class Terrain {
         if(this.moving_sun) {
         	this.night_mode = false;		//disable night mode for moving sun
         	update_sun_height(sun_moving_rate);
-        	sun_light_color = new Color(1.0f, sunlight.getY(), sunlight.getY());
+        	float light_val = sunlight_value_map(sunlight.getY());
+        	sun_light_color = new Color(light_val, light_val, light_val);
         }
 
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));

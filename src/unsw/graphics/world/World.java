@@ -71,9 +71,10 @@ public class World extends Application3D implements KeyListener {
 			myCamera.showTorchLight(gl, new Color(0f, 0f, 0f), 0f, 0f);
 		}
 		if (terrain.isNightMode()) {
-			setBackground(new Color(33/255f, 33/255f, 33/255f));
+			setBackground(terrain.getDarkestColor());
 		} else {
-			setBackground(Color.WHITE);
+			//setBackground(Color.WHITE);
+			setBackground(terrain.getSunlightColor());
 		}
 	}
 
