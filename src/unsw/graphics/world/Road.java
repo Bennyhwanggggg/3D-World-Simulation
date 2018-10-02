@@ -121,15 +121,15 @@ public class Road {
     }
     
     private float beizerDerivative(int i, float t) {
-    	switch(i) {
-	        case 0:
-	            return (1-t) * (1-t);
-	
-	        case 1:
-	            return 2 * (1-t) * t;
-	            
-	        case 2:
-	            return t * t;
+      switch(i) {
+          case 0:
+              return (1-t) * (1-t);
+  
+          case 1:
+              return 2 * (1-t) * t;
+              
+          case 2:
+              return t * t;
         }
         
         // this should never happen
@@ -137,7 +137,7 @@ public class Road {
     }
     
     public Vector3 getTangent(float t) {
-    	int i = (int)Math.floor(t);
+      int i = (int)Math.floor(t);
         t = t - i;
         
         i *= 3;
@@ -148,25 +148,29 @@ public class Road {
         Point2D p3 = points.get(i++);
         
         float x = beizerDerivative(0, t) + (p1.getX()-p0.getX())
-        		+ beizerDerivative(1, t) + (p2.getX()-p1.getX())
-        		+ beizerDerivative(2, t) + (p3.getX()-p2.getX());
+            + beizerDerivative(1, t) + (p2.getX()-p1.getX())
+            + beizerDerivative(2, t) + (p3.getX()-p2.getX());
         
         // use z as notation since we are gonna translate it to z when we go back to 3D
         float z = beizerDerivative(0, t) + (p1.getY()-p0.getY())
-        		+ beizerDerivative(1, t) + (p2.getY()-p1.getY())
-        		+ beizerDerivative(2, t) + (p3.getY()-p2.getY());
+            + beizerDerivative(1, t) + (p2.getY()-p1.getY())
+            + beizerDerivative(2, t) + (p3.getY()-p2.getY());
         
         Vector3 tangent = new Vector3(x, 0, z);
-    	return tangent.normalize();
+      return tangent.normalize();
     }
     
     public void init(GL3 gl) {
-		texture = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
-	}
+    texture = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
+  }
 
     public void draw(GL3 gl, CoordFrame3D frame, Terrain terrain) {
-    	// Bind Texture
-    	Shader.setInt(gl, "tex", 0);
+      // offset
+      float y_offset = 0.03f;
+      float step_rate = 0.02f;
+      
+      // Bind Texture
+      Shader.setInt(gl, "tex", 0);
         gl.glActiveTexture(GL.GL_TEXTURE0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
         
@@ -180,33 +184,71 @@ public class Road {
         List<Vector3> normals = new ArrayList<Vector3>();
         List<Integer> indices = new ArrayList<Integer>();
         // Get the road points
-        for (float t=0; t<this.size(); t+= 0.002f) {
-        	Point2D spinePoint = point(t);
-        	Vector3 tangent = getTangent(t);
-        	Vector3 normalVector = new Vector3(-tangent.getZ(), 0, tangent.getX());
-        	
-        	Point2D normalPoint = new Point2D(normalVector.getX()*width, normalVector.getZ()*width);
-        	Point3D point1 = new Point3D(spinePoint.getX(), 
-        						terrain.altitude(spinePoint.getX(), spinePoint.getY())+0.3f,
-        						spinePoint.getY());
-        	Point3D point2 = new Point3D(normalPoint.getX(), 
-								terrain.altitude(normalPoint.getX(), normalPoint.getY())+0.3f,
-								normalPoint.getY());
-        	Point3D point3 = new Point3D(spinePoint.getX(), 
-					terrain.altitude(spinePoint.getX(), spinePoint.getY()),
-					spinePoint.getY());
-        	Point3D point4 = new Point3D(normalPoint.getX(), 
-						terrain.altitude(normalPoint.getX(), normalPoint.getY()),
-						normalPoint.getY());
-        	//System.out.println("Point1 is spinepoint: " + point1.getX() + " " + point1.getY() + " " + point1.getZ());
-        	//System.out.println("Point2 is normal point: " + point2.getX() + " " + point2.getY() + " " + point2.getZ());
-//        	vertices.add(point1);
-//        	vertices.add(point2);
-//        	vertices.add(point3);
-//        	vertices.add(point4);
+        for (float t=0; t<this.size(); t+= step_rate) {
+          Point2D spinePoint = point(t);
+          Vector3 tangent = getTangent(t);
+          Vector3 normalVector = new Vector3(-tangent.getZ(), 0, tangent.getX());
+          
+          Point2D normalPoint = new Point2D(normalVector.getX()*width, normalVector.getZ()*width);
+          
+          Point3D point1 = new Point3D(spinePoint.getX(), 
+                    terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset,
+                    spinePoint.getY());
+          
+          Point3D point2 = new Point3D(spinePoint.getX() + 0.5f, 
+          terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset,
+          spinePoint.getY());
+          
+//          Point3D point2 = new Point3D(normalPoint.getX(), 
+//                terrain.altitude(normalPoint.getX(), normalPoint.getY())+y_offset,
+//                normalPoint.getY());
+//          
+//          Point3D point3 = new Point3D(spinePoint.getX(), 
+//                terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset,
+//                spinePoint.getY());
+//          
+//          Point3D point4 = new Point3D(normalPoint.getX(), 
+//                terrain.altitude(normalPoint.getX(), normalPoint.getY())+y_offset,
+//                normalPoint.getY());
+//          
+//          System.out.println("Point1 is spinepoint: " + point1.getX() + " " + point1.getY() + " " + point1.getZ());
+//          System.out.println("Point2 is normal point: " + point2.getX() + " " + point2.getY() + " " + point2.getZ());
+//          System.out.println("===============");
+          
+          vertices.add(point1);
+          vertices.add(point2);
+//          vertices.add(point3);
+//          vertices.add(point4);
         }
         
-        meshes = new TriangleMesh(vertices, true);
+      /* indices order
+       * 2 ----3
+       * |   |
+       * 0 --- 1
+       * 
+       * */
+        
+        int gap_slides = 2;
+        for(int i=0; i<(vertices.size() /2 - 1); i++) {
+          // for each slides
+          normals.add(new Vector3(1, 0, 0));
+          normals.add(new Vector3(1, 0, 0));
+          // add indices
+          int num_slides = i*gap_slides;
+          // first triangle
+          indices.add(num_slides);
+          indices.add(num_slides + 1);
+          indices.add(num_slides + 3);
+          // 2nd triangle
+          indices.add(num_slides + 2);
+          indices.add(num_slides );
+          indices.add(num_slides + 3);
+
+          
+        }
+        
+//        meshes = new TriangleMesh(vertices, true);
+        meshes = new TriangleMesh(vertices, normals, indices);
         meshes.init(gl);
         meshes.draw(gl, frame);
     }
