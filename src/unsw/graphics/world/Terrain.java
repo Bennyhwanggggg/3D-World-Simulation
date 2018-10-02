@@ -107,8 +107,8 @@ public class Terrain {
         this.depth = depth;
         this.night_mode = false;
         this.moving_sun = false;
-        this.sun_moving_rate = 0.02f;
-        this.darkest_value = 33f;		// minimum value for dark, 33f/255;
+        this.sun_moving_rate = 0.005f;
+        this.darkest_value = 30f;		// minimum value for dark, 30f/255;
         this.sun_light_color = new Color(1f,1f,1f);
         altitudes = new float[width][depth];
         trees = new ArrayList<Tree>();
