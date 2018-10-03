@@ -137,27 +137,28 @@ public class Road {
     }
     
     public Vector3 getTangent(float t) {
-      int i = (int)Math.floor(t);
-        t = t - i;
-        
-        i *= 3;
-        
-        Point2D p0 = points.get(i++);
-        Point2D p1 = points.get(i++);
-        Point2D p2 = points.get(i++);
-        Point2D p3 = points.get(i++);
-        
-        float x = beizerDerivative(0, t) + (p1.getX()-p0.getX())
-            + beizerDerivative(1, t) + (p2.getX()-p1.getX())
-            + beizerDerivative(2, t) + (p3.getX()-p2.getX());
-        
-        // use z as notation since we are gonna translate it to z when we go back to 3D
-        float z = beizerDerivative(0, t) + (p1.getY()-p0.getY())
-            + beizerDerivative(1, t) + (p2.getY()-p1.getY())
-            + beizerDerivative(2, t) + (p3.getY()-p2.getY());
-        
-        Vector3 tangent = new Vector3(x, 0, z);
-      return tangent.normalize();
+    	int m = 3;
+    	int i = (int)Math.floor(t);
+	    t = t - i;
+	    
+	    i *= m;
+	    
+	    Point2D p0 = points.get(i++);
+	    Point2D p1 = points.get(i++);
+	    Point2D p2 = points.get(i++);
+	    Point2D p3 = points.get(i++);
+	    
+	    float x = beizerDerivative(0, t) * (p1.getX()-p0.getX())
+	        + beizerDerivative(1, t) * (p2.getX()-p1.getX())
+	        + beizerDerivative(2, t) * (p3.getX()-p2.getX());
+	    
+	    // use z as notation since we are gonna translate it to z when we go back to 3D
+	    float z = beizerDerivative(0, t) * (p1.getY()-p0.getY())
+	        + beizerDerivative(1, t) * (p2.getY()-p1.getY())
+	        + beizerDerivative(2, t) * (p3.getY()-p2.getY());
+	    
+	    Vector3 tangent = new Vector3(x, 0, z);
+	    return tangent.normalize();
     }
     
     public void init(GL3 gl) {
@@ -166,8 +167,8 @@ public class Road {
 
     public void draw(GL3 gl, CoordFrame3D frame, Terrain terrain) {
       // offset
-      float y_offset = 0.03f;
-      float step_rate = 0.02f;
+      float y_offset = 0.0001f;
+      float step_rate = 0.005f;
       
       // Bind Texture
       Shader.setInt(gl, "tex", 0);
@@ -187,43 +188,31 @@ public class Road {
         for (float t=0; t<this.size(); t+= step_rate) {
           Point2D spinePoint = point(t);
           Vector3 tangent = getTangent(t);
-          Vector3 normalVector = new Vector3(-tangent.getZ(), 0, tangent.getX());
+          Vector3 normalVector = new Vector3(-tangent.getZ(), 0, tangent.getX()).normalize();
           
-          Point2D normalPoint = new Point2D(normalVector.getX()*width, normalVector.getZ()*width);
+          float road_height = terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset;
           
-          Point3D point1 = new Point3D(spinePoint.getX(), 
-                    terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset,
-                    spinePoint.getY());
+          Point2D normalPoint = new Point2D(-1*normalVector.getX()*(width/2), -1*normalVector.getZ()*(width/2));
+          float width_offset_x = normalPoint.getX();
+          float width_offset_y = normalPoint.getY();
           
-          Point3D point2 = new Point3D(spinePoint.getX() + 0.5f, 
-          terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset,
-          spinePoint.getY());
-          
-//          Point3D point2 = new Point3D(normalPoint.getX(), 
-//                terrain.altitude(normalPoint.getX(), normalPoint.getY())+y_offset,
-//                normalPoint.getY());
-//          
-//          Point3D point3 = new Point3D(spinePoint.getX(), 
-//                terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset,
-//                spinePoint.getY());
-//          
-//          Point3D point4 = new Point3D(normalPoint.getX(), 
-//                terrain.altitude(normalPoint.getX(), normalPoint.getY())+y_offset,
-//                normalPoint.getY());
-//          
-//          System.out.println("Point1 is spinepoint: " + point1.getX() + " " + point1.getY() + " " + point1.getZ());
-//          System.out.println("Point2 is normal point: " + point2.getX() + " " + point2.getY() + " " + point2.getZ());
-//          System.out.println("===============");
+          Point3D point1 = new Point3D(spinePoint.getX() + width_offset_x, 
+        		  road_height,
+                  spinePoint.getY() + width_offset_y);
+                    
+          Point3D point2 = new Point3D(spinePoint.getX() - width_offset_x, 
+        		  road_height,
+        		  spinePoint.getY() - width_offset_y);
+
           
           vertices.add(point1);
           vertices.add(point2);
-//          vertices.add(point3);
-//          vertices.add(point4);
+
         }
         
       /* indices order
        * 2 ----3
-       * |   |
+       * |     |
        * 0 --- 1
        * 
        * */
