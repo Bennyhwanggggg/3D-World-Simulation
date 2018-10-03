@@ -73,7 +73,6 @@ public class World extends Application3D implements KeyListener {
 		if (terrain.isNightMode()) {
 			setBackground(terrain.getDarkestColor());
 		} else {
-			//setBackground(Color.WHITE);
 			setBackground(terrain.getSunlightColor());
 		}
 	}
@@ -123,6 +122,7 @@ public class World extends Application3D implements KeyListener {
         	break;
         case KeyEvent.VK_N:
         	terrain.night_mode_switch();
+        	myCamera.updateTorchStatus(terrain.isNightMode());
         	break;
         case KeyEvent.VK_SPACE:
         	myCamera.switchTorch();

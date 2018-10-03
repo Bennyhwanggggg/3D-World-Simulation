@@ -78,6 +78,10 @@ public class Camera {
 		torchSwitch = !torchSwitch;
 	}
 	
+	public void updateTorchStatus(boolean status) {
+		this.torchSwitch = status;
+	}
+	
 	public void showTorchLight(GL3 gl, Color lightIntensity, float attenuation, float coneAngle) {
 		Shader.setPoint3D(gl, "lightPosSpot", new Point3D(pos.getX(), pos.getY()+0.7f, pos.getZ()));	// + 0.7f so for little offset
 		Shader.setColor(gl, "lightIntensitySpot", lightIntensity);
