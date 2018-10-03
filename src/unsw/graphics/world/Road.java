@@ -162,13 +162,14 @@ public class Road {
     }
     
     public void init(GL3 gl) {
-    texture = new Texture(gl, "res/textures/rock.bmp", "bmp", false);
-  }
+    	texture = new Texture(gl, "res/textures/road1.jpg", "jpg", true);
+    }
 
     public void draw(GL3 gl, CoordFrame3D frame, Terrain terrain) {
       // offset
       float y_offset = 0.0001f;
       float step_rate = 0.005f;
+      Shader.setPenColor(gl, Color.WHITE);
       
       // Bind Texture
       Shader.setInt(gl, "tex", 0);
@@ -184,6 +185,8 @@ public class Road {
         List<Point3D> vertices = new ArrayList<Point3D>();
         List<Vector3> normals = new ArrayList<Vector3>();
         List<Integer> indices = new ArrayList<Integer>();
+        List<Point2D> t_list = new ArrayList<Point2D>();		// texture
+        
         // Get the road points
         for (float t=0; t<this.size(); t+= step_rate) {
           Point2D spinePoint = point(t);
@@ -218,6 +221,7 @@ public class Road {
        * */
         
         int gap_slides = 2;
+        float texture_len = 0;
         for(int i=0; i<(vertices.size() /2 - 1); i++) {
           // for each slides
           normals.add(new Vector3(1, 0, 0));
@@ -228,16 +232,29 @@ public class Road {
           indices.add(num_slides);
           indices.add(num_slides + 1);
           indices.add(num_slides + 3);
+          
+
+
+          
           // 2nd triangle
           indices.add(num_slides + 2);
           indices.add(num_slides );
           indices.add(num_slides + 3);
 
+          // texture
+          t_list.add(new Point2D(texture_len,0));
+          t_list.add(new Point2D(texture_len,1));
           
+          texture_len +=step_rate;
+          if(texture_len>1) {
+        	  texture_len = 0;
+          }
         }
         
+
+        
 //        meshes = new TriangleMesh(vertices, true);
-        meshes = new TriangleMesh(vertices, normals, indices);
+        meshes = new TriangleMesh(vertices, indices, true, t_list );
         meshes.init(gl);
         meshes.draw(gl, frame);
     }

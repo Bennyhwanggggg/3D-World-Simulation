@@ -119,7 +119,7 @@ public class Pond {
 	public void draw(GL3 gl, CoordFrame3D frame) {
 		Shader.setInt(gl, "tex", 0);
         gl.glActiveTexture(GL.GL_TEXTURE0);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get((time/20)%2).getId());
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get((time/10)%2).getId());
 
         time += 1;
         Shader.setPenColor(gl, Color.WHITE);
