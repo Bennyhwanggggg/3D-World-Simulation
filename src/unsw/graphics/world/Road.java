@@ -27,6 +27,16 @@ public class Road {
     private Texture texture;
     
     private TriangleMesh meshes;
+    private Terrain terrain;
+    
+    private List<Point3D> vertices;
+    private List<Vector3> normals;
+    private List<Integer> indices;
+    private List<Point2D> t_list;
+    
+    // offset
+	private float y_offset = 0.001f;
+  	private float step_rate = 0.005f;
     
     /**
      * Create a new road with the specified spine 
@@ -161,31 +171,18 @@ public class Road {
 	    return tangent.normalize();
     }
     
+    public void setTerrain(Terrain terrain) {
+    	this.terrain = terrain;
+    }
+    
     public void init(GL3 gl) {
     	texture = new Texture(gl, "res/textures/road1.jpg", "jpg", true);
-    }
-
-    public void draw(GL3 gl, CoordFrame3D frame, Terrain terrain) {
-      // offset
-      float y_offset = 0.0001f;
-      float step_rate = 0.005f;
-      Shader.setPenColor(gl, Color.WHITE);
-      
-      // Bind Texture
-      Shader.setInt(gl, "tex", 0);
-        gl.glActiveTexture(GL.GL_TEXTURE0);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
-        
-        // Set material properties
-        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
-        Shader.setColor(gl, "diffuseCoeff", new Color(0.8f, 0.8f, 0.8f));
-        Shader.setColor(gl, "specularCoeff", new Color(0.3f, 0.3f, 0.3f));
-        Shader.setFloat(gl, "phongExp", 22f);
-        
-        List<Point3D> vertices = new ArrayList<Point3D>();
-        List<Vector3> normals = new ArrayList<Vector3>();
-        List<Integer> indices = new ArrayList<Integer>();
-        List<Point2D> t_list = new ArrayList<Point2D>();		// texture
+    	
+    	
+    	vertices = new ArrayList<Point3D>();
+        normals = new ArrayList<Vector3>();
+        indices = new ArrayList<Integer>();
+        t_list = new ArrayList<Point2D>();		// texture
         
         // Get the road points
         for (float t=0; t<this.size(); t+= step_rate) {
@@ -213,12 +210,12 @@ public class Road {
 
         }
         
-      /* indices order
-       * 2 ----3
-       * |     |
-       * 0 --- 1
-       * 
-       * */
+        /* indices order
+         * 2 ----3
+         * |     |
+         * 0 --- 1
+         * 
+         * */
         
         int gap_slides = 2;
         float texture_len = 0;
@@ -250,10 +247,93 @@ public class Road {
         	  texture_len = 0;
           }
         }
+    }
+
+    public void draw(GL3 gl, CoordFrame3D frame, Terrain terrain) {
+   
+      	Shader.setPenColor(gl, Color.WHITE);
+      
+      	// Bind Texture
+      	Shader.setInt(gl, "tex", 0);
+        gl.glActiveTexture(GL.GL_TEXTURE0);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, texture.getId());
+        
+        // Set material properties
+        Shader.setColor(gl, "ambientCoeff", Color.WHITE);
+        Shader.setColor(gl, "diffuseCoeff", new Color(0.8f, 0.8f, 0.8f));
+        Shader.setColor(gl, "specularCoeff", new Color(0.4f, 0.4f, 0.4f));
+        Shader.setFloat(gl, "phongExp", 22f);
+        
+//        List<Point3D> vertices = new ArrayList<Point3D>();
+//        List<Vector3> normals = new ArrayList<Vector3>();
+//        List<Integer> indices = new ArrayList<Integer>();
+//        List<Point2D> t_list = new ArrayList<Point2D>();		// texture
+//        
+//        // Get the road points
+//        for (float t=0; t<this.size(); t+= step_rate) {
+//          Point2D spinePoint = point(t);
+//          Vector3 tangent = getTangent(t);
+//          Vector3 normalVector = new Vector3(-tangent.getZ(), 0, tangent.getX()).normalize();
+//          
+//          float road_height = terrain.altitude(spinePoint.getX(), spinePoint.getY())+y_offset;
+//          
+//          Point2D normalPoint = new Point2D(-1*normalVector.getX()*(width/2), -1*normalVector.getZ()*(width/2));
+//          float width_offset_x = normalPoint.getX();
+//          float width_offset_y = normalPoint.getY();
+//          
+//          Point3D point1 = new Point3D(spinePoint.getX() + width_offset_x, 
+//        		  road_height,
+//                  spinePoint.getY() + width_offset_y);
+//                    
+//          Point3D point2 = new Point3D(spinePoint.getX() - width_offset_x, 
+//        		  road_height,
+//        		  spinePoint.getY() - width_offset_y);
+//
+//          
+//          vertices.add(point1);
+//          vertices.add(point2);
+//
+//        }
+//        
+//      /* indices order
+//       * 2 ----3
+//       * |     |
+//       * 0 --- 1
+//       * 
+//       * */
+//        
+//        int gap_slides = 2;
+//        float texture_len = 0;
+//        for(int i=0; i<(vertices.size() /2 - 1); i++) {
+//          // for each slides
+//          normals.add(new Vector3(1, 0, 0));
+//          normals.add(new Vector3(1, 0, 0));
+//          // add indices
+//          int num_slides = i*gap_slides;
+//          // first triangle
+//          indices.add(num_slides);
+//          indices.add(num_slides + 1);
+//          indices.add(num_slides + 3);
+//          
+//
+//
+//          
+//          // 2nd triangle
+//          indices.add(num_slides + 2);
+//          indices.add(num_slides );
+//          indices.add(num_slides + 3);
+//
+//          // texture
+//          t_list.add(new Point2D(texture_len,0));
+//          t_list.add(new Point2D(texture_len,1));
+//          
+//          texture_len +=step_rate;
+//          if(texture_len>1) {
+//        	  texture_len = 0;
+//          }
+//        }
         
 
-        
-//        meshes = new TriangleMesh(vertices, true);
         meshes = new TriangleMesh(vertices, indices, true, t_list );
         meshes.init(gl);
         meshes.draw(gl, frame);

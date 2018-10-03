@@ -240,6 +240,7 @@ public class Terrain {
      */
     public void addRoad(float width, List<Point2D> spine) {
         Road road = new Road(width, spine);
+        road.setTerrain(this);
         roads.add(road);        
     }
     
