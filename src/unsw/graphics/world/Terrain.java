@@ -244,8 +244,8 @@ public class Terrain {
         roads.add(road);        
     }
     
-    public void addPonds(float x, float z, float w) {
-    	Pond pond = new Pond(x, z, w, this);
+    public void addPonds(float x, float z, float w, float offset) {
+    	Pond pond = new Pond(x, z, w, offset, this);
     	ponds.add(pond);
     }
   
@@ -312,7 +312,7 @@ public class Terrain {
         // ========================================
         texture = new Texture(gl, "res/textures/grass.bmp", "bmp", true);
         
-//        shader = new Shader(gl, "shaders/vertex_dir_phong.glsl", "shaders/fragment_dir_phong.glsl");	// lighting
+        // lighting
         shader = new Shader(gl, "shaders/vertex_spotlight_phong.glsl", "shaders/fragment_spotlight_phong.glsl");
         shader.use(gl);
                 
@@ -392,7 +392,6 @@ public class Terrain {
     public float sunlight_value_map(float sunheight) {
     	// sunheight has range (0,1)
     	// map to darkestvalue
-    	
     	return ( (255- this.darkest_value)*sunheight + this.darkest_value )/255f;
     }
     
@@ -407,8 +406,6 @@ public class Terrain {
         
         Shader.setModelMatrix(gl, frame.getMatrix());
         
-        // Set light properties
-        
         // moving sun
         if(this.moving_sun) {
         	this.night_mode = false;		//disable night mode for moving sun
@@ -417,6 +414,7 @@ public class Terrain {
         	sun_light_color = new Color(light_val, light_val, light_val);
         }
 
+        // Set light properties
         Shader.setPoint3D(gl, "lightPos", new Point3D(sunlight.getX(), sunlight.getY(), sunlight.getZ()));
         Shader.setColor(gl, "lightIntensity", sun_light_color);	// changing light color as sun goes down
         Shader.setColor(gl, "ambientIntensity", new Color(0.5f, 0.5f, 0.5f));

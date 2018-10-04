@@ -88,9 +88,10 @@ public class LevelIO {
         		JSONObject jsonPond = jsonPonds.getJSONObject(i);
         		float x = (float) jsonPond.getDouble("x");
         		float z = (float) jsonPond.getDouble("z");
+        		float offset = (float) jsonPond.getDouble("offset");
         		float w = (float) jsonPond.getDouble("width");
 
-        		terrain.addPonds(x, z, w);
+        		terrain.addPonds(x, z, w, offset);
         	}
         }
         

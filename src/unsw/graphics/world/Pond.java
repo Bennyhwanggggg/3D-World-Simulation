@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 
 import unsw.graphics.CoordFrame3D;
@@ -28,13 +29,15 @@ public class Pond {
 	private TriangleMesh mesh;
 	private float x;
 	private float z;
+	private float offset;
 	private float width;
 	
 	
-	public Pond(float x, float z, float w, Terrain terrain) {
+	public Pond(float x, float z, float w, float offset, Terrain terrain) {
 		this.x = x;
 		this.z = z;
 		this.width = w;
+		this.offset = offset;
 		this.terrain = terrain;
 	}
 	
@@ -42,8 +45,6 @@ public class Pond {
 	public void init(GL3 gl) {
 		Texture texture1 = new Texture(gl, "res/textures/Water1.jpg", "jpg", true);
 		Texture texture2 = new Texture(gl, "res/textures/Water2.jpg", "jpg", true);
-//		Texture texture3 = new Texture(gl, "res/textures/Water3.jpg", "jpg", true);
-//		textures = Arrays.asList(texture1, texture2, texture3);
 		textures = Arrays.asList(texture1, texture2)
 ;		
 		// Generate the names for the buffers.
@@ -53,18 +54,18 @@ public class Pond {
         // ==========================================================
         List<Point3D> p_list = new ArrayList<Point3D>();
         
-        p_list.add(new Point3D(x, terrain.altitude(x, z)+0.5f, z));
-    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+0.5f, z-width));
-    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+0.5f, z-width));
-    	p_list.add(new Point3D(x, terrain.altitude(x, z)+0.5f, z));
-    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+0.5f, z-width));
-    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+0.5f, z+width));
-    	p_list.add(new Point3D(x, terrain.altitude(x, z)+0.5f, z));
-    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+0.5f, z+width));
-    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+0.5f, z+width));
-    	p_list.add(new Point3D(x, terrain.altitude(x, z)+0.5f, z));
-    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+0.5f, z+width));
-    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+0.5f, z-width));
+        p_list.add(new Point3D(x, terrain.altitude(x, z)+offset, z));
+    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+offset, z-width));
+    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+offset, z-width));
+    	p_list.add(new Point3D(x, terrain.altitude(x, z)+offset, z));
+    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+offset, z-width));
+    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+offset, z+width));
+    	p_list.add(new Point3D(x, terrain.altitude(x, z)+offset, z));
+    	p_list.add(new Point3D(x-width, terrain.altitude(x, z)+offset, z+width));
+    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+offset, z+width));
+    	p_list.add(new Point3D(x, terrain.altitude(x, z)+offset, z));
+    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+offset, z+width));
+    	p_list.add(new Point3D(x+width, terrain.altitude(x, z)+offset, z-width));
 
             
         // texture
@@ -88,40 +89,22 @@ public class Pond {
 		t_list.add(new Point2D(1f, 1f));
 		t_list.add(new Point2D(1f, 0f));
 		
-
-        
-        // indices
-        // ==========================================================
-//        int[] i_list = new int[3*2*(terrain.getWidth()-1)*(terrain.getDepth()-1)];
-//        
-//        index_vert=0;
-//        cnt = 0;
-//        
-//        for(int j=0; j<terrain.getDepth()-1; j++){
-//        	for(int i=0; i<terrain.getWidth()-1; i++){
-//        		index_vert = (int) (dz.get(j)*terrain.getWidth()+dx.get(i));
-//        		i_list[cnt++] = (index_vert);
-//        		i_list[cnt++] = (index_vert+terrain.getWidth());
-//        		i_list[cnt++] = (index_vert+1);
-//        		
-//        		i_list[cnt++] = (index_vert+1);
-//        		i_list[cnt++] = (index_vert+terrain.getWidth());
-//        		i_list[cnt++] = (index_vert+terrain.getWidth()+1);
-//        	}
-//        }
-//        
-//        Integer[] index_list = ArrayUtils.toObject(i_list);
-//        List<Integer> indice_points = Arrays.asList(index_list);
         mesh = new TriangleMesh(p_list, true, t_list);
         mesh.init(gl);
 	}
 	
 	public void draw(GL3 gl, CoordFrame3D frame) {
+		
+		// texture
 		Shader.setInt(gl, "tex", 0);
         gl.glActiveTexture(GL.GL_TEXTURE0);
-        gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get((time/10)%2).getId());
-
+        gl.glBindTexture(GL.GL_TEXTURE_2D, textures.get((time/10)%2).getId()); // switch texture based on frame
         time += 1;
+        
+        // fix z fighting
+        gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
+    	gl.glPolygonOffset(-1.0f, -1.0f);
+
         Shader.setPenColor(gl, Color.WHITE);
         // Set the material properties
         Shader.setColor(gl, "ambientCoeff", Color.WHITE);
@@ -130,6 +113,9 @@ public class Pond {
         Shader.setFloat(gl, "phongExp", 50f);
 
         mesh.draw(gl, frame);
+        
+        // Disable polygon offset after
+        gl.glDisable(GL2.GL_POLYGON_OFFSET_FILL);
 	}
 	
 	public void draw(GL3 gl) {

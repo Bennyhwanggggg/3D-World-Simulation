@@ -103,7 +103,7 @@ public class World extends Application3D implements KeyListener {
 		switch (e.getKeyCode()) {
         
         case KeyEvent.VK_UP:
-        	myCamera.move(-0.2f); // integer is the speed
+        	myCamera.move(-0.2f); // input value is the speed
             break;
         case KeyEvent.VK_DOWN:
         	myCamera.move(0.2f);

@@ -106,8 +106,6 @@ public class Camera {
 			orientation = new Vector3(dx, 0, dz).normalize();
 		}
 		avatar.setOrientation(orientation);
-//		System.out.println("Camera orientation is " + orientation.getX() + " " + orientation.getZ());
-//		System.out.println("Camera angle is " + angle);
 	}
 	
 	public void turnRight(float deg) {
@@ -136,7 +134,6 @@ public class Camera {
 		float avatarX = pos.getX()-orientation.getX()*thirdPersonDistance;
 		float avatarZ = pos.getZ()-orientation.getZ()*thirdPersonDistance;
 		Point3D avatarPos = new Point3D(avatarX, terrain.altitude(avatarX, avatarZ), avatarZ);
-//		System.out.println("Avatar position is at " + avatarPos.getX() + " " + avatarPos.getY() + " " + avatarPos.getZ());
 		avatar.setPosition(avatarPos);
 		if (!firstPerson) {
 			// update camera height based on avatar pos instead
@@ -148,23 +145,19 @@ public class Camera {
 		pos = new Point3D(pos.getX() + orientation.getX()*d,  pos.getY(),  pos.getZ()+orientation.getZ()*d);
 		pos = new Point3D(pos.getX(), terrain.altitude(pos.getX(), pos.getZ()), pos.getZ());
 		updateThridPersonView();
-//		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 	}
 	
 	public void toggleView() {
 		if (!firstPerson) {
-			System.out.println("Switched to first person");
 			pos = new Point3D(pos.getX()-orientation.getX()*thirdPersonDistance, 
 					pos.getY()-orientation.getY()*thirdPersonDistance, 
 					pos.getZ()-orientation.getZ()*thirdPersonDistance);
 		} else {
-			System.out.println("Switched to third person");
 			pos = new Point3D(pos.getX()+orientation.getX()*thirdPersonDistance, 
 					pos.getY()+orientation.getY()*thirdPersonDistance, 
 					pos.getZ()+orientation.getZ()*thirdPersonDistance);	
 			updateThridPersonView(); 
 		}
-//		System.out.println("Camera position is: " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 		firstPerson = !firstPerson;
 	}
 
