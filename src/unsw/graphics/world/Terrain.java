@@ -205,16 +205,50 @@ public class Terrain {
         	return altitude;
         }
         
-        float x_remain = x % 1;
-        float z_remain = z % 1;
-        int x0 = (int) x;
-        int z0 = (int) z;
-        int x1 = x0<width-1?x0+1:x0;
-        int z1 = z0<depth-1?z0+1:z0;
-        float a0 = ((1-x_remain)*altitudes[x0][z0]) + (x_remain*altitudes[x1][z0]);
-        float a1 = ((1-x_remain)*altitudes[x0][z1]) + (x_remain*altitudes[x1][z1]);
-        altitude = ((1-z_remain)*a0)+(z_remain*a1);
-        return altitude;
+//        float x_remain = x % 1;
+//        float z_remain = z % 1;
+//        int x0 = (int) x;
+//        int z0 = (int) z;
+//        int x1 = x0<width-1?x0+1:x0;
+//        int z1 = z0<depth-1?z0+1:z0;
+//        float a0 = ((1-x_remain)*altitudes[x0][z0]) + (x_remain*altitudes[x1][z0]);
+//        float a1 = ((1-x_remain)*altitudes[x0][z1]) + (x_remain*altitudes[x1][z1]);
+//        altitude = ((1-z_remain)*a0)+(z_remain*a1);
+//        return altitude;
+      float x_remain = x % 1;
+      float z_remain = z % 1;
+      int x0 = (int) x;
+      int z0 = (int) z;
+      int x1 = x0<width-1?x0+1:x0;
+      int z1 = z0<depth-1?z0+1:z0;
+      
+      float hypotenuseX = (x0 + z1) - z;
+
+      if (x_remain == 0 && z_remain == 0) {
+    	  altitude = altitudes[x0][z0];
+      } else if (x_remain == 0) {
+    	  altitude = z_remain * altitudes[x0][z1] + (1-z_remain) * altitudes[x0][z0];
+      } else if (z_remain == 0) {
+    	  altitude = x_remain * altitudes[x1][z0] + (1-x_remain) * altitudes[x0][z0];
+      } else if (x < hypotenuseX){
+    	  float a0 = x_remain/(hypotenuseX - x0);
+    	  float zAlt1  = (1-z_remain) * altitudes[x1][z0] + z_remain * altitudes[x0][z1];
+    	  
+    	  float a1 = (hypotenuseX - x) / (hypotenuseX - x0);
+    	  float zAlt2 = (1-z_remain) * altitudes[x0][z0] + z_remain * altitudes[x0][z1];
+    	  
+    	  altitude = a0*zAlt1 + a1*zAlt2;
+      } else {
+    	  float a0 = -(1 - x_remain)/(hypotenuseX - x1);
+    	  float zAlt1  = (z_remain) * altitudes[x0][z1] + (1-z_remain) * altitudes[x1][z0];
+    	  
+    	  float a1 = (hypotenuseX - x) / (hypotenuseX - x1);
+    	  float zAlt2  = (z_remain) * altitudes[x1][z1] + (1-z_remain) * altitudes[x1][z0];
+    	  
+    	  altitude = a0*zAlt1 + a1*zAlt2;
+      }
+      
+      return altitude;
     }
     
     /**
