@@ -73,6 +73,8 @@ void main()
         a = 0.0;
     } else {
     	a = pow(cos(radians(lightToSurfaceAngle)), a);
+    	float distanceToLight = length(view_matrix*vec4(lightPosSpot,1) - viewPosition);
+    	a = 1.0 / (1.0 + a * pow(distanceToLight, 2));
     }
     
     vec4 ambientAndDiffuse = vec4(ambient + diffuse, 1);

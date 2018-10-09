@@ -44,8 +44,8 @@ public class World extends Application3D implements KeyListener {
      */
     public static void main(String[] args) throws FileNotFoundException {
     	
-        Terrain terrain = LevelIO.load(new File(args[0]));
-//    	Terrain terrain = LevelIO.load(new File("res/worlds/test9.json"));
+//        Terrain terrain = LevelIO.load(new File(args[0]));
+    	Terrain terrain = LevelIO.load(new File("res/worlds/test9.json"));
         World world = new World(terrain);
         world.start();
     }
@@ -66,7 +66,7 @@ public class World extends Application3D implements KeyListener {
 			myCamera.drawAvatar(gl);
 		}
 		if (myCamera.isTorchOn()) {
-			myCamera.showTorchLight(gl, new Color(0f, 0f, 0f), 32.5f, 20f);
+			myCamera.showTorchLight(gl, new Color(0f, 0f, 0f), 35.5f, 20f);
 		} else {
 			myCamera.showTorchLight(gl, new Color(0f, 0f, 0f), 0f, 0f);
 		}
