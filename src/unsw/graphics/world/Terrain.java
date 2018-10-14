@@ -301,7 +301,8 @@ public class Terrain {
         List<Point2D> t_list = new ArrayList<Point2D>();
         for(dz=0; dz<depth; dz++){
         	for(dx=0; dx<width; dx++){
-        		t_list.add(new Point2D((float)dz/(depth-1), (float)dx/(width-1)));
+//        		t_list.add(new Point2D((float)dz/(depth-1), (float)dx/(width-1)));
+        		t_list.add(new Point2D((float)dz, (float)dx));
         	}
         }
         
